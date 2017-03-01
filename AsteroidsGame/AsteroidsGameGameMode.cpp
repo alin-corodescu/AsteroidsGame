@@ -3,6 +3,10 @@
 #include "AsteroidsGame.h"
 #include "AsteroidsGameGameMode.h"
 
+#include "PlayerAvatar/SpaceshipPawn.h"
 
-
+AAsteroidsGameGameMode::AAsteroidsGameGameMode()
+{
+	DefaultPawnClass = ASpaceshipPawn::StaticClass();
+}
 

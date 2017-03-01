@@ -13,7 +13,9 @@ class ASTEROIDSGAME_API AAsteroidsGameGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
-	
+public:
+	// Default constructor for the game mode
+	AAsteroidsGameGameMode();
 	
 	
 };
