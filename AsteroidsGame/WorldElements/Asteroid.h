@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "Asteroid.generated.h"
 
+
 UCLASS()
 class ASTEROIDSGAME_API AAsteroid : public AActor
 {
@@ -13,6 +14,9 @@ class ASTEROIDSGAME_API AAsteroid : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AAsteroid();
+
+	// Destructor which notifies the AsteroidField of destruction;
+	~AAsteroid();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,16 +28,17 @@ public:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector
 			NormalImpulse, const FHitResult& Hit);
+	// Direction vector
+	UPROPERTY(EditAnywhere)
+	FVector movementDirection;
+	class AsteroidField* parent;
+	void SetParent(AsteroidField* parent);
 
 private:
 	// A static mesh component. The visual representation of our actor
 	class UStaticMeshComponent* AsteroidVisual;
 	// A class to store the human player
 	class APawn* Player;
-	// Direction vector
-	UPROPERTY(EditAnywhere)
-	FVector movementDirection;
-	
-	class WorldBoundaries* movementManager;
-	
+	class WorldBoundaries* movementManager;	
 };
+

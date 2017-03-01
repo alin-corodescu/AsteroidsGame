@@ -3,6 +3,7 @@
 #include "AsteroidsGame.h"
 #include "Asteroid.h"
 #include "WorldBoundaries.h"
+#include "AsteroidField.h"
 
 // Sets default values
 // Sets default values
@@ -26,6 +27,12 @@ AAsteroid::AAsteroid()
 	AsteroidVisual->OnComponentHit.AddDynamic(this, &AAsteroid::OnHit);
 
 	movementManager = WorldBoundaries::GetInstance();
+	this->parent = parent;
+}
+
+AAsteroid::~AAsteroid()
+{
+	parent->NotifyDestruction(this);
 }
 
 // Called when the game starts or when spawned
@@ -65,50 +72,10 @@ void AAsteroid::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 			}
 			return;
 		}
-	// First, check found the player pawn
-	//if (Player)
-	//{
-	//	if (OtherActor->GetUniqueID() == Player->GetUniqueID())
-		//{
-			// Temp rotation.
-			FRotator SpawnRotation = this->GetActorRotation();
-			// Temp spawn location.
-			FVector SpawnLocation = GetActorLocation();
-			// Temp spawn location
-			FVector ActorScale = this->GetActorScale3D();
-			ActorScale.X = ActorScale.X * 0.8f;
-			ActorScale.Y = ActorScale.Y * 0.8f;
-			ActorScale.Z = ActorScale.Z * 0.8f;
-			if (ActorScale.X > 0.3f)
-			{
-				UWorld* const World = GetWorld();
-				if (World != NULL)
-				{
-					// Update the spawn location for the smaller rock.
-					SpawnLocation.X = SpawnLocation.X + 20;
-					// 1. Spawn a new asteroid
-					AAsteroid* NewActor = World->SpawnActor<AAsteroid>(SpawnLocation,
-						SpawnRotation);
-					NewActor->SetActorScale3D(ActorScale);
-					// Generate random number for movement
-					float moveDirection = FMath::FRandRange(2.0f, 8.0);
-					NewActor->movementDirection.X = moveDirection;
-					moveDirection = FMath::FRandRange(2.0f, 8.0);
-					// Set the movement direction of new actor
-					NewActor->movementDirection.Y = moveDirection;
-					// Update the spawn location for the smaller rock
-					SpawnLocation.X = SpawnLocation.X - 40;
-					// 2. Spawn a new asteroid
-					NewActor = World->SpawnActor<AAsteroid>(SpawnLocation, SpawnRotation);
-					NewActor->SetActorScale3D(ActorScale);
-					moveDirection = -FMath::FRandRange(2.0f, 8.0);
-					NewActor->movementDirection.X = moveDirection;
-					moveDirection = -FMath::FRandRange(2.0f, 8.0);
-					NewActor->movementDirection.Y = moveDirection;
-				}
-			}
-			// Safely destroy this object
-			Destroy();
-		//}
-	//}
+		Destroy();
+}
+
+void AAsteroid::SetParent(AsteroidField* parent)
+{
+	this->parent = parent;
 }

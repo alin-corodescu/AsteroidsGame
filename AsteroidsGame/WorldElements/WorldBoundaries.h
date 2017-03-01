@@ -9,6 +9,7 @@
  */
 class ASTEROIDSGAME_API WorldBoundaries
 {
+	friend class AsteroidField;
 private:
 	WorldBoundaries();
 	~WorldBoundaries();
@@ -24,4 +25,5 @@ public:
 	void SetUpLimits(const UCameraComponent* camera);
 
 	bool CorrectPosition(AActor* actor);
+
 };

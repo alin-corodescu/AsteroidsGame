@@ -2,11 +2,12 @@
 
 #include "AsteroidsGame.h"
 #include "AsteroidsGameGameMode.h"
-
+#include "WorldElements/AsteroidField.h"
 #include "PlayerAvatar/SpaceshipPawn.h"
 
 AAsteroidsGameGameMode::AAsteroidsGameGameMode()
 {
 	DefaultPawnClass = ASpaceshipPawn::StaticClass();
+	(new AsteroidField())->SpawnAsteroids(4);
 }
 
