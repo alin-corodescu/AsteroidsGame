@@ -25,6 +25,11 @@ public:
 	void MoveRightInput(float Val);
 	// Fire forward
 	void FireForwardInput(float Val);
+
+	UFUNCTION()
+		void OnOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	UFUNCTION()
+		void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 private:
 	// The mesh component
 	class UStaticMeshComponent* ShipMeshComponent;

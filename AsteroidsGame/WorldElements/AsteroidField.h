@@ -6,11 +6,13 @@
  */
 class AAsteroid;
 enum Types { Large, Medium, Small };
+
 class ASTEROIDSGAME_API AsteroidField
 {
 private:
 	std::map<AAsteroid*,Types> activeAsteroids;
 	class WorldBoundaries*  worldEdges;
+	class UWorld* world;
 	/* Scaling factor for a large (default) asteroid*/
 	static float DefaultScale;
 	/* Speed factor for a large (default) asteroid */
@@ -23,7 +25,7 @@ private:
 	void BreakUpAsteroid(AAsteroid* asteroid);
 
 public:
-	AsteroidField();
+	AsteroidField(UWorld* world);
 	~AsteroidField();
 	/**
 	 *	Spawns a new set of large asteroids on the edges
@@ -35,6 +37,4 @@ public:
 	/* Notifies the AsteroidField that an asteroid has been destroyed */
 	void NotifyDestruction(AAsteroid* asteroid);
 	
-
-
 };

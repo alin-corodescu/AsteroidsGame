@@ -14,7 +14,7 @@ ASpaceshipPawn::ASpaceshipPawn()
 	// Create the mesh component.
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
-	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	//ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 
 	// Get the ship mesh.
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
@@ -150,4 +150,15 @@ void ASpaceshipPawn::FireForwardInput(float Val)
 void ASpaceshipPawn::ShotTimerExpired()
 {
 	CanFire = true;
+}
+
+// Called when the actor overlaps with another actor.
+void ASpaceshipPawn::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("overlap with"));
+}
+// Called when the actor stops overlaping with another actor.
+void ASpaceshipPawn::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("END oveRlap with"));
 }

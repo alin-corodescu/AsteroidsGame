@@ -10,16 +10,15 @@ float AsteroidField::SpeedScale = 100.0f;
 
 AAsteroid * AsteroidField::ConstructAsteroid(FVector SpawnLocation, FRotator SpawnRotation, Types type, bool NegativeMovement)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ConstructAsteroid Called"));
 	FVector scale(DefaultScale, DefaultScale, DefaultScale);
-	// Spawns the new actor
-	UWorld* const World = GEngine->GetWorld();
-	AAsteroid* NewActor = World->SpawnActor<AAsteroid>(SpawnLocation, SpawnRotation);
+	AAsteroid* NewActor = world->SpawnActor<AAsteroid>(SpawnLocation, SpawnRotation);
 	NewActor->SetParent(this);
 	switch (type)
 	{
-	case Large: NewActor->SetActorScale3D(scale); break;
-	case Medium: NewActor->SetActorScale3D(scale * 0.66f); break;
-	case Small: NewActor->SetActorScale3D(scale * 0.33f); break;
+		case Large: NewActor->SetActorScale3D(scale); break;
+		case Medium: NewActor->SetActorScale3D(scale * 0.66f); break;
+		case Small: NewActor->SetActorScale3D(scale * 0.33f); break;
 	}
 	// Generate random number for movement
 	float moveDirection = FMath::FRandRange(1.0f, 3.0f) * SpeedScale;
@@ -28,13 +27,14 @@ AAsteroid * AsteroidField::ConstructAsteroid(FVector SpawnLocation, FRotator Spa
 	// Set the movement direction of new actor
 	NewActor->movementDirection.Y = moveDirection;
 
-	activeAsteroids.insert(std::make_pair(NewActor, Large));
+	activeAsteroids.insert(std::make_pair(NewActor, type));
 	return NewActor;
 }
 
 void AsteroidField::BreakUpAsteroid(AAsteroid * asteroid)
 {
 	// Get the type of the asteroid that need to be broken
+	UE_LOG(LogTemp, Warning, TEXT("Breaking function called Called"));
 	Types type = activeAsteroids.find(asteroid)->second;
 	FVector spawnLocation = asteroid->GetActorLocation();
 	switch (type)
@@ -53,11 +53,13 @@ void AsteroidField::BreakUpAsteroid(AAsteroid * asteroid)
 		break;
 	default: /* To be completed */ break;
 	}
+
 }
 
-AsteroidField::AsteroidField()
+AsteroidField::AsteroidField(UWorld* world)
 {
 	worldEdges = WorldBoundaries::GetInstance();
+	this->world = world;
 }
 
 AsteroidField::~AsteroidField()
@@ -89,8 +91,8 @@ void AsteroidField::SpawnAsteroids(int Count)
 			SpawnLocation.Z = 0;
 			break;
 		case 3:
-			SpawnLocation.Y = worldEdges->Left;
-			SpawnLocation.X = FMath::FRandRange(worldEdges->Bottom, worldEdges->Top);
+			SpawnLocation.X = worldEdges->Left;
+			SpawnLocation.Y = FMath::FRandRange(worldEdges->Bottom, worldEdges->Top);
 			SpawnLocation.Z = 0;
 			break;
 		}
@@ -101,10 +103,14 @@ void AsteroidField::SpawnAsteroids(int Count)
 
 void AsteroidField::NotifyDestruction(AAsteroid * asteroid)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Notify destruction Called"));
 	std::map<AAsteroid*, Types>::iterator it = activeAsteroids.find(asteroid);
 	Types type = it->second;
 	if (type != Small)
 		BreakUpAsteroid(asteroid);
-	activeAsteroids.erase(it);
+	if (it != activeAsteroids.end())
+	{
+		activeAsteroids.erase(it);
+	}
 }
 

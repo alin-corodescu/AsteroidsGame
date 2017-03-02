@@ -2,6 +2,7 @@
 
 #include "AsteroidsGame.h"
 #include "StaticCameraController.h"
+#include "../WorldElements/AsteroidField.h"
 #include "../WorldElements/WorldBoundaries.h"
 
 // Sets default values
@@ -42,7 +43,10 @@ void AStaticCameraController::BeginPlay()
 		{
 			PlayerController->SetViewTarget(this);
 		}
+		AsteroidField* field = new AsteroidField(World);
+		field->SpawnAsteroids(4);
 	}
+
 
 
 }

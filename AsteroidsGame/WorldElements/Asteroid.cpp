@@ -12,8 +12,10 @@ AAsteroid::AAsteroid()
 	PrimaryActorTick.bCanEverTick = true;
 	// Create and attach a static mesh component.
 	AsteroidVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AsteroidMesh"));
+	
 	// Set the mesh to the root component.
 	RootComponent = AsteroidVisual;
+
 	// Set the mesh for the static mesh component.
 	ConstructorHelpers::FObjectFinder<UStaticMesh>
 		AsteroidAsset(TEXT("StaticMesh'/Game/ExampleContent/Landscapes/Meshes/SM_Rock.SM_Rock'"));
@@ -21,18 +23,18 @@ AAsteroid::AAsteroid()
 	if (AsteroidAsset.Succeeded())
 	{
 		AsteroidVisual->SetStaticMesh(AsteroidAsset.Object);
-		//AsteroidVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -100.0f));
 	}
+
 	// set up a notification for when this component hits something
 	AsteroidVisual->OnComponentHit.AddDynamic(this, &AAsteroid::OnHit);
-
+	
 	movementManager = WorldBoundaries::GetInstance();
 	this->parent = parent;
 }
 
 AAsteroid::~AAsteroid()
 {
-	parent->NotifyDestruction(this);
+	//parent->NotifyDestruction(this);
 }
 
 // Called when the game starts or when spawned
@@ -46,7 +48,9 @@ void AAsteroid::BeginPlay()
 void AAsteroid::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	this->SetActorLocation(this->GetActorLocation() + movementDirection * DeltaTime);
+	FVector location = movementDirection * DeltaTime;
+	this->AddActorLocalOffset(location, true);
+	//this->SetActorLocation(this->GetActorLocation() + movementDirection * DeltaTime,true);
 	movementManager->CorrectPosition(this);
 }
 
@@ -57,22 +61,22 @@ void AAsteroid::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	// Debug some info to the screen if needed
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! -> ") +
-			OtherActor->GetName());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! -> ") + OtherActor->GetName());
 	}
 	// Another better approach:
-		if (this->IsA(OtherActor->GetActorClass()))
+	if (this->IsA(OtherActor->GetActorClass()))
+	{
+		AsteroidVisual->MoveIgnoreActors.Add(OtherActor);
+		// A debug message
+		if (GEngine)
 		{
-			// Ignore collisions with other actors that whose name includes "asteroids"
-			AsteroidVisual->MoveIgnoreActors.Add(OtherActor);
-			// A debug message
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! Ignore collision.") );
-			}
-			return;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! Ignore collision.") );
 		}
-		Destroy();
+		return;
+	}
+	// We can destroy the asteroid
+	parent->NotifyDestruction(this);
+	Destroy();
 }
 
 void AAsteroid::SetParent(AsteroidField* parent)

@@ -8,6 +8,6 @@
 AAsteroidsGameGameMode::AAsteroidsGameGameMode()
 {
 	DefaultPawnClass = ASpaceshipPawn::StaticClass();
-	(new AsteroidField())->SpawnAsteroids(4);
+	
 }
 
