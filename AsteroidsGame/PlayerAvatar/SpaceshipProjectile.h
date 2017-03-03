@@ -24,9 +24,14 @@ public:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			FVector NormalImpulse, const FHitResult& Hit);
+
+	void markAsPlayerOwned();
+
 private:
 	// Sphere collision component
 	UStaticMeshComponent* ProjectileMesh;
 	// Projectile movement component
 	UProjectileMovementComponent* ProjectileMovement;
+	// Whether or not this projectile was spawned by the player pawn
+	bool bIsPlayerOwned;
 };

@@ -25,7 +25,7 @@ public:
 
 	int GetNumberOfLives();
 	void SetNumberOfLives(int numberOfLives);
-	void addLives(int count);
+	void modifyLives(int count);
 	
 	
 	

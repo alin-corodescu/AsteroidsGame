@@ -2,6 +2,8 @@
 
 #include "AsteroidsGame.h"
 #include "SpaceshipProjectile.h"
+#include "AsteroidsPlayerState.h"
+#include "../WorldElements/AwardsScoreInterface.h"
 
 
 // Sets default values
@@ -65,6 +67,27 @@ void ASpaceshipProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Projectile Hit! -> ") + OtherActor ->GetName());
 	}
 	// Safely destroy this object
+	//here i need to update the score
+	if (bIsPlayerOwned)
+	{
+		APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		AAsteroidsPlayerState* CurrentState = NULL;
+		if (Player)
+			CurrentState = Cast<AAsteroidsPlayerState>(Player->PlayerState);
+		//move when it sets bIsPlayerOwned;
+		 
+		bool bIsImplemented = OtherActor->GetClass()->ImplementsInterface(UAwardsScoreInterface::StaticClass());
+		if (bIsImplemented)
+		{
+			IAwardsScoreInterface* ScoringObject = Cast<IAwardsScoreInterface>(OtherActor);
+			if (CurrentState)
+				CurrentState->modifyScore(ScoringObject->AwardScore());
+		}
+	}
 	Destroy();
 }
 
+void ASpaceshipProjectile::markAsPlayerOwned()
+{
+	this->bIsPlayerOwned = true;
+}

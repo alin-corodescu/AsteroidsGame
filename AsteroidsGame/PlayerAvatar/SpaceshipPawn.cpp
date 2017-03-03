@@ -12,10 +12,14 @@ ASpaceshipPawn::ASpaceshipPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	MaxSpeed = 1000.0f;
 	// Create the mesh component.
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
-	//ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+
+	// set up a notification for when this component hits something
+	ShipMeshComponent->OnComponentHit.AddDynamic(this, &ASpaceshipPawn::OnHit);
 
 	// Get the ship mesh.
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
@@ -52,7 +56,7 @@ void ASpaceshipPawn::BeginPlay()
 	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
 	if (CurrentState)
 	{
-		CurrentState->SetScore(50);
+		CurrentState->SetScore(0);
 		CurrentState->SetNumberOfLives(3);
 	}
 }
@@ -93,6 +97,7 @@ void ASpaceshipPawn::Tick( float DeltaTime )
 			{
 				// Spawn the projectile
 				ASpaceshipProjectile* NewActor = World->SpawnActor<ASpaceshipProjectile>(SpawnLocation, SpawnRotation);
+				NewActor->markAsPlayerOwned();
 				// Try and play the sound
 				if (FireSound != nullptr)
 				{
@@ -125,13 +130,9 @@ void ASpaceshipPawn::MoveRightInput(float Val)
 	// Is there no input?
 	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
 	if (bHasInput)
-	{
 		CurrentRotationSpeed = Val * 100.0f;
-	}
 	else
-	{
 		CurrentRotationSpeed = 0;
-	}
 }
 
 // Called when a move forward or backward event occurs.
@@ -141,11 +142,15 @@ void ASpaceshipPawn::MoveForwardInput(float Val)
 	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
 	if (bHasInput)
 	{
-		CurrentForwardSpeed = Val * 250.0f;
+		if (CurrentForwardSpeed < MaxSpeed)
+			CurrentForwardSpeed += Val * 10.0f;
 	}
 	else
 	{
-		CurrentForwardSpeed = 0;
+		if (CurrentForwardSpeed > 25.0f)
+			CurrentForwardSpeed -= 25.0f;
+		else
+			CurrentForwardSpeed = 0;
 	}
 }
 
@@ -154,19 +159,20 @@ void ASpaceshipPawn::FireForwardInput(float Val)
 {
 	CurrentFireValue = Val;
 }
+void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	// Debug some info to the screen if needed
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Spaceship Hit! -> ") + OtherActor->GetName());
+	}
+
+	// Get the player state
+	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
+	CurrentState->modifyLives(-1);
+}
 // Sets shot flag to true. Used by a timer event
 void ASpaceshipPawn::ShotTimerExpired()
 {
 	CanFire = true;
-}
-
-// Called when the actor overlaps with another actor.
-void ASpaceshipPawn::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("overlap with"));
-}
-// Called when the actor stops overlaping with another actor.
-void ASpaceshipPawn::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("END oveRlap with"));
 }

@@ -28,7 +28,14 @@ void AAsteroidsPlayerState::SetNumberOfLives(int numberOfLives)
 	NumberOfLives = numberOfLives;
 }
 
-void AAsteroidsPlayerState::addLives(int count)
+void AAsteroidsPlayerState::modifyLives(int count)
 {
 	NumberOfLives += count;
+	if (NumberOfLives == 0)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Game should end !"));
+		}
+	}
 }

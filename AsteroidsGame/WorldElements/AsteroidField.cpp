@@ -14,6 +14,7 @@ AAsteroid * AsteroidField::ConstructAsteroid(FVector SpawnLocation, FRotator Spa
 	FVector scale(DefaultScale, DefaultScale, DefaultScale);
 	AAsteroid* NewActor = world->SpawnActor<AAsteroid>(SpawnLocation, SpawnRotation);
 	NewActor->SetParent(this);
+	NewActor->SetType(type);
 	switch (type)
 	{
 		case Large: NewActor->SetActorScale3D(scale); break;

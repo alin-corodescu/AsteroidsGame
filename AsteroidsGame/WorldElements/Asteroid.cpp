@@ -83,3 +83,24 @@ void AAsteroid::SetParent(AsteroidField* parent)
 {
 	this->parent = parent;
 }
+
+int AAsteroid::AwardScore() const
+{
+	switch (type)
+	{
+	case Large: return 20;
+	case Medium: return 50;
+	case Small: return 100;
+	}
+	return 0;
+}
+
+void AAsteroid::SetType(Types type)
+{
+	this->type = type;
+}
+
+Types AAsteroid::GetType()
+{
+	return type;
+}

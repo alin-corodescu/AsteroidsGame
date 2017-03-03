@@ -9,7 +9,7 @@
 void ASimpleHUD::DrawScore()
 {
 	FVector2D ScreenDimensions = FVector2D(Canvas->SizeX, Canvas->SizeY);
-
+	
 	FText ScoreString = FText::Format(LOCTEXT("TestFormat", "Score: {0}"),
 		FText::AsNumber(CurrentState->GetScore()));
 	
@@ -43,7 +43,8 @@ ASimpleHUD::ASimpleHUD()
 	LivesImageAsset = HUDAssetsTextureOb.Object;
 	float x = LivesImageAsset->GetSizeX();
 	float y = LivesImageAsset->GetSizeY();
-	LivesIcon = UCanvas::MakeIcon(LivesImageAsset, 0, 0, x, y);
+	LivesIcon = UCanvas::MakeIcon(LivesImageAsset, 0, 0, x, y);
+
 }
 
 void ASimpleHUD::DrawHUD()

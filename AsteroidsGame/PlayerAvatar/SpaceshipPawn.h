@@ -26,10 +26,10 @@ public:
 	// Fire forward
 	void FireForwardInput(float Val);
 
+	// Function to handle the projectile hitting something
 	UFUNCTION()
-		void OnOverlap(AActor* OverlappedActor, AActor* OtherActor);
-	UFUNCTION()
-		void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector
+			NormalImpulse, const FHitResult& Hit);
 private:
 	// The mesh component
 	class UStaticMeshComponent* ShipMeshComponent;
@@ -51,6 +51,9 @@ private:
 	class USoundBase* FireSound;
 	// Sets shot flag to true. Used by a timer event
 	void ShotTimerExpired();
+
+	UPROPERTY(EditAnywhere)
+	float MaxSpeed;
 
 	class WorldBoundaries* movementManager;
 };

@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "AwardsScoreInterface.h"
+#include "AsteroidField.h"
 #include "GameFramework/Actor.h"
 #include "Asteroid.generated.h"
 
 
 UCLASS()
-class ASTEROIDSGAME_API AAsteroid : public AActor
+class ASTEROIDSGAME_API AAsteroid : public AActor, public  IAwardsScoreInterface
 {
 	GENERATED_BODY()
 	
@@ -34,11 +35,17 @@ public:
 	class AsteroidField* parent;
 	void SetParent(AsteroidField* parent);
 
+	int AwardScore() const override;
+
+	void SetType(Types type);
+	Types GetType();
+
 private:
 	// A static mesh component. The visual representation of our actor
 	class UStaticMeshComponent* AsteroidVisual;
 	// A class to store the human player
 	class APawn* Player;
-	class WorldBoundaries* movementManager;	
+	class WorldBoundaries* movementManager;
+	Types type;
 };
 
