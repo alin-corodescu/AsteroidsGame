@@ -4,6 +4,7 @@
 #include "SpaceshipPawn.h"
 #include "SpaceshipProjectile.h"
 #include "../WorldElements/WorldBoundaries.h"
+#include "AsteroidsPlayerState.h"
 
 // Sets default values
 ASpaceshipPawn::ASpaceshipPawn()
@@ -46,7 +47,13 @@ ASpaceshipPawn::ASpaceshipPawn()
 void ASpaceshipPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Get the player state
+	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
+	if (CurrentState)
+	{
+		CurrentState->SetScore(50);
+	}
 }
 
 // Called every frame
