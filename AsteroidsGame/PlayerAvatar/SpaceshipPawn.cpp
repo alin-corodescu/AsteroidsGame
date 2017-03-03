@@ -53,6 +53,7 @@ void ASpaceshipPawn::BeginPlay()
 	if (CurrentState)
 	{
 		CurrentState->SetScore(50);
+		CurrentState->SetNumberOfLives(3);
 	}
 }
 

@@ -12,8 +12,8 @@ void ASimpleHUD::DrawScore()
 
 	FText ScoreString = FText::Format(LOCTEXT("TestFormat", "Score: {0}"),
 		FText::AsNumber(CurrentState->GetScore()));
-
-	FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 150), 10);
+	
+	FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 100), 15);
 	FCanvasTextItem TextItem(TextCentrePos, ScoreString,
 		HUDFont, FLinearColor::Blue);
 	Canvas->DrawItem(TextItem);
@@ -21,8 +21,15 @@ void ASimpleHUD::DrawScore()
 
 void ASimpleHUD::DrawLives()
 {
-	Canvas->SetDrawColor(FColor::White);
-	Canvas->DrawIcon(LivesIcon, 100, 100, 1);
+	float Y = 10;
+	float margin = 10;
+	int numberOfLives = CurrentState->GetNumberOfLives();
+	for (int i = 0; i < numberOfLives; i++)
+	{
+		Canvas->SetDrawColor(FColor::White);
+		Canvas->DrawIcon(LivesIcon, i * (LivesIcon.UL + margin), Y, 1);
+	}
+
 }
 
 ASimpleHUD::ASimpleHUD()
