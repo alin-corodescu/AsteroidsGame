@@ -14,6 +14,16 @@ class ASTEROIDSGAME_API ASimpleHUD : public AHUD
 	GENERATED_BODY()
 
 		class AAsteroidsPlayerState* CurrentState;
+
+	void DrawScore();
+	void DrawLives();
+
+	UPROPERTY()
+	UTexture2D* LivesImageAsset; //to be renamed;
+
+	UPROPERTY()
+	FCanvasIcon LivesIcon;
+
 public:
 
 	ASimpleHUD();

@@ -6,37 +6,56 @@
 
 #define LOCTEXT_NAMESPACE "SimpleHUD"
 
+void ASimpleHUD::DrawScore()
+{
+	FVector2D ScreenDimensions = FVector2D(Canvas->SizeX, Canvas->SizeY);
+
+	FText ScoreString = FText::Format(LOCTEXT("TestFormat", "Score: {0}"),
+		FText::AsNumber(CurrentState->GetScore()));
+
+	FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 150), 10);
+	FCanvasTextItem TextItem(TextCentrePos, ScoreString,
+		HUDFont, FLinearColor::Blue);
+	Canvas->DrawItem(TextItem);
+}
+
+void ASimpleHUD::DrawLives()
+{
+	Canvas->SetDrawColor(FColor::White);
+	Canvas->DrawIcon(LivesIcon, 100, 100, 1);
+}
+
 ASimpleHUD::ASimpleHUD()
 {
 	static ConstructorHelpers::FObjectFinder<UFont> Font(TEXT("/Engine/EngineFonts/RobotoDistanceField"));
 	HUDFont = Font.Object;
+
+	// Create the image
+	static ConstructorHelpers::FObjectFinder<UTexture2D>
+		HUDAssetsTextureOb(TEXT("Texture2D'/Game/Images/heart.heart'"));
+	LivesImageAsset = HUDAssetsTextureOb.Object;
+	float x = LivesImageAsset->GetSizeX();
+	float y = LivesImageAsset->GetSizeY();
+	LivesIcon = UCanvas::MakeIcon(LivesImageAsset, 0, 0, x, y);
 }
 
 void ASimpleHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	if (CurrentState)
-	{
-		FVector2D ScreenDimensions = FVector2D(Canvas->SizeX, Canvas->SizeY);
-
-		FText ScoreString = FText::Format(LOCTEXT("TestFormat", "Score: {0}"), 
-			FText::AsNumber(CurrentState->GetScore()));
-
-		FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 200), 10);
-		FCanvasTextItem TextItem(TextCentrePos, ScoreString, 
-			HUDFont, FLinearColor::Blue);
-		Canvas->DrawItem(TextItem);
-	}
-	else
+	if (!CurrentState)
 	{
 		APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 		if (Player)
-		{
 			CurrentState = Cast<AAsteroidsPlayerState>(Player->PlayerState);
-		}
+		else return;
 	}
+
+	DrawScore();
+
+	DrawLives();
+
 }
 
 #undef LOCTEXT_NAMESPACE
