@@ -85,6 +85,7 @@ void ASpaceshipPawn::Tick( float DeltaTime )
 		{
 			// Temp spawn rotation
 			FRotator SpawnRotation = this->GetActorRotation();
+			SpawnRotation;
 			// Temp spawn location
 			FVector SpawnLocation = GetActorLocation();
 			FVector ForwardVector = GetActorForwardVector();

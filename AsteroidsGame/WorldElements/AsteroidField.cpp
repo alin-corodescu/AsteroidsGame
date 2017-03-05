@@ -4,6 +4,7 @@
 #include "AsteroidField.h"
 #include "WorldBoundaries.h"
 #include "Asteroid.h"
+#include "Saucer.h"
 
 float AsteroidField::DefaultScale = 9.0f;
 float AsteroidField::SpeedScale = 100.0f;
@@ -70,8 +71,10 @@ AsteroidField::~AsteroidField()
 void AsteroidField::SpawnAsteroids(int Count)
 {
 	int i;
-	FVector SpawnLocation;
+	FVector SpawnLocation(100,100,0);
 	FRotator rotation(0,0,0);
+	ASaucer* saucer = world->SpawnActor<ASaucer>(SpawnLocation, rotation);
+	saucer->SetMovementDirection(FVector(100, 100, 0));
 	for (i = 0; i < Count; i++)
 	{
 		switch (i % 4)
@@ -98,7 +101,7 @@ void AsteroidField::SpawnAsteroids(int Count)
 			break;
 		}
 
-		ConstructAsteroid(SpawnLocation, rotation, Large, FMath::RandBool());
+		//ConstructAsteroid(SpawnLocation, rotation, Large, FMath::RandBool());
 	}
 }
 
