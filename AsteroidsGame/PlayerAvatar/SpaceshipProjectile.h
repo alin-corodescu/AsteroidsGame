@@ -27,6 +27,8 @@ public:
 
 	void markAsPlayerOwned();
 
+
+
 private:
 	// Sphere collision component
 	UStaticMeshComponent* ProjectileMesh;
@@ -34,4 +36,5 @@ private:
 	UProjectileMovementComponent* ProjectileMovement;
 	// Whether or not this projectile was spawned by the player pawn
 	bool bIsPlayerOwned;
+	class WorldBoundaries* movementManager;
 };

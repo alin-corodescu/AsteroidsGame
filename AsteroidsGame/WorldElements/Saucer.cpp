@@ -9,10 +9,10 @@
 // Sets default values
 ASaucer::ASaucer()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Saucer constructor called called Called"));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	// Get the player pawn to find it's location
-
 
 	GunOffset = 100.0f;
 	FireRate = 2.0f;
@@ -30,9 +30,7 @@ ASaucer::ASaucer()
 		SaucerMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
 	// If the mesh was found set it and set properties.
 	if (SaucerMesh.Succeeded())
-	{
 		SaucerMeshComponent->SetStaticMesh(SaucerMesh.Object);
-	}
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
 		FireAudio(TEXT("SoundWave'/Game/TwinStick/Audio/TwinStickFire.TwinStickFire'"));
@@ -40,17 +38,24 @@ ASaucer::ASaucer()
 	{
 		FireSound = FireAudio.Object;
 	}
-
+	// set a LifeSpan of 10.0s
+	//this->InitialLifeSpan = 10.0f;
 	movementManager = WorldBoundaries::GetInstance();
+
 }
 
 // Called when the game starts or when spawned
 void ASaucer::BeginPlay()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Saucer begin called"));
 	Super::BeginPlay();
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	FTimerHandle TimerHandle_StartOffset;
+	// Wait 2 seconds before firing the first time
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_StartOffset, this, &ASaucer::SetCanFire, 2.0f);
+
+	LastUsedRotation = GetActorRotation();
+	MovementDirection = GenerateMovementDirection();
 }
 
 // Called every frame
@@ -61,21 +66,22 @@ void ASaucer::Tick( float DeltaTime )
 	if (CanFire)
 	{
 		// Rotates the Saucer towards the player
-		FRotator newRotation = (PlayerPawn->GetActorLocation() - this->GetActorLocation()).Rotation();
+		EnterTargetingState();
 
-		this->SetActorRelativeRotation(newRotation);
-		this->Fire();
+		Fire();
+
+		ExitTargetingState();
 	}
 
 	FVector location = MovementDirection * DeltaTime;
-	this->AddActorLocalOffset(location);
+	this->AddActorLocalOffset(location, true);
 	movementManager->CorrectPosition(this);
 	//handle the modification of the MovementDirection
 }
 
 int ASaucer::AwardScore() const
 {
-	return 1000;
+	return 0;
 }
 
 void ASaucer::SetMovementDirection(FVector direction)
@@ -126,4 +132,20 @@ void ASaucer::Fire()
 void ASaucer::SetCanFire()
 {
 	CanFire = true;
+}
+
+FVector ASaucer::GenerateMovementDirection()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Wrong generate called"));
+	return FVector(100,0,0);
+}
+
+void ASaucer::EnterTargetingState()
+{
+	return;
+}
+
+void ASaucer::ExitTargetingState()
+{
+	return;
 }

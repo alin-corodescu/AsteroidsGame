@@ -21,7 +21,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	int AwardScore() const override;
+	virtual int AwardScore() const;
 	
 	void SetMovementDirection(FVector direction);
 
@@ -31,7 +31,7 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector
 			NormalImpulse, const FHitResult& Hit);
-private:
+protected:
 	// Reference to the player pawn, need to get it's current position
 	APawn* PlayerPawn;
 
@@ -60,4 +60,20 @@ private:
 	class UStaticMeshComponent* SaucerMeshComponent;
 
 	class WorldBoundaries* movementManager;
+
+	FRotator LastUsedRotation;
+
+	// Generates a Movement Direction vector specific to the type of the object
+	virtual FVector GenerateMovementDirection();
+	/**
+	*	Modifies the actor rotation using it's targeting logic
+	*	To be used in conjuction with ExitTargetingState()
+	*	/sa ExitTargetingState
+	*/
+	virtual void EnterTargetingState();
+	/**
+	*	Reverts the actor rotation to the one used before calling
+	*	EnterTargetingState(), has no effect otherwise.
+	*/
+	virtual void ExitTargetingState();
 };

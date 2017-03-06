@@ -3,6 +3,7 @@
 #include "AsteroidsGame.h"
 #include "SpaceshipProjectile.h"
 #include "AsteroidsPlayerState.h"
+#include "../WorldElements/WorldBoundaries.h"
 #include "../WorldElements/AwardsScoreInterface.h"
 
 
@@ -42,6 +43,8 @@ ASpaceshipProjectile::ASpaceshipProjectile()
 	// Set the scale of the projectile
 	FVector scale(1.0f, 1.0f, 1.0f);
 	this->SetActorScale3D(scale);
+
+	movementManager = WorldBoundaries::GetInstance();
 }
 
 // Called when the game starts or when spawned
@@ -55,7 +58,7 @@ void ASpaceshipProjectile::BeginPlay()
 void ASpaceshipProjectile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	movementManager->CorrectPosition(this);
 }
 
 void ASpaceshipProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
