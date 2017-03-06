@@ -148,8 +148,8 @@ void ASpaceshipPawn::MoveForwardInput(float Val)
 	}
 	else
 	{
-		if (CurrentForwardSpeed > 25.0f)
-			CurrentForwardSpeed -= 25.0f;
+		if (CurrentForwardSpeed > 10.0f)
+			CurrentForwardSpeed /= 1.005f;
 		else
 			CurrentForwardSpeed = 0;
 	}

@@ -4,7 +4,7 @@
 #include "AsteroidField.h"
 #include "WorldBoundaries.h"
 #include "Asteroid.h"
-#include "SmallSaucer.h"
+#include "LargeSaucer.h"
 
 float AsteroidField::DefaultScale = 9.0f;
 float AsteroidField::SpeedScale = 100.0f;
@@ -73,7 +73,7 @@ void AsteroidField::SpawnAsteroids(int Count)
 	int i;
 	FVector SpawnLocation(worldEdges->Left,worldEdges->Top,0);
 	FRotator rotation(0,0,0);
-	ASmallSaucer* saucer = world->SpawnActor<ASmallSaucer>(SpawnLocation, rotation);
+	ALargeSaucer* saucer = world->SpawnActor<ALargeSaucer>(SpawnLocation, rotation);
 	//saucer->SetMovementDirection(FVector(100, 100, 0));
 	for (i = 0; i < Count; i++)
 	{
