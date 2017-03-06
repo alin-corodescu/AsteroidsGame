@@ -14,23 +14,24 @@ ASaucer::ASaucer()
 	// Get the player pawn to find it's location
 
 
-	GunOffset = 50.0f;
+	GunOffset = 100.0f;
 	FireRate = 2.0f;
 	//actually wait 2 seconds before firing
 	CanFire = false;
 
-	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SaucerMesh"));
-	RootComponent = ShipMeshComponent;
-	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	SaucerMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SaucerMesh"));
+	RootComponent = SaucerMeshComponent;
+	SaucerMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 
-
+	SaucerMeshComponent->OnComponentHit.AddDynamic(this, &ASaucer::OnHit);
 	// Get the ship mesh.
+	// change it to the Saucer asset
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		ShipMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
+		SaucerMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
 	// If the mesh was found set it and set properties.
-	if (ShipMesh.Succeeded())
+	if (SaucerMesh.Succeeded())
 	{
-		ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
+		SaucerMeshComponent->SetStaticMesh(SaucerMesh.Object);
 	}
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
@@ -60,7 +61,7 @@ void ASaucer::Tick( float DeltaTime )
 	if (CanFire)
 	{
 		// Rotates the Saucer towards the player
-		FRotator newRotation = (-(this->GetActorLocation() - PlayerPawn->GetActorLocation())).Rotation();
+		FRotator newRotation = (PlayerPawn->GetActorLocation() - this->GetActorLocation()).Rotation();
 
 		this->SetActorRelativeRotation(newRotation);
 		this->Fire();
@@ -85,6 +86,17 @@ void ASaucer::SetMovementDirection(FVector direction)
 FVector ASaucer::GetMovementDirection()
 {
 	return MovementDirection;
+}
+
+void ASaucer::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	// Should be safe to use since it occurs at the end of the tick
+	// Debug some info to the screen if needed
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Saucer Hit! -> ") + OtherActor->GetName());
+	}
+	this->Destroy();
 }
 
 void ASaucer::Fire()

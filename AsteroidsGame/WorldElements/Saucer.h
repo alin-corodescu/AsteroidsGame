@@ -26,6 +26,11 @@ public:
 	void SetMovementDirection(FVector direction);
 
 	FVector GetMovementDirection();
+
+	// Function to handle the saucer hitting something
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector
+			NormalImpulse, const FHitResult& Hit);
 private:
 	// Reference to the player pawn, need to get it's current position
 	APawn* PlayerPawn;
@@ -52,7 +57,7 @@ private:
 	FVector MovementDirection;
 
 	// The mesh component
-	class UStaticMeshComponent* ShipMeshComponent;
+	class UStaticMeshComponent* SaucerMeshComponent;
 
 	class WorldBoundaries* movementManager;
 };
