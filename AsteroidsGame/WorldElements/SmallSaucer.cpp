@@ -38,7 +38,8 @@ FVector ASmallSaucer::GenerateMovementDirection()
 void ASmallSaucer::EnterTargetingState()
 {
 	FRotator newRotation = (PlayerPawn->GetActorLocation() - this->GetActorLocation()).Rotation();
-
+	float accuracyDelta = FMath::RandRange(accuracyRange.first, accuracyRange.second);
+	newRotation.Yaw += accuracyDelta;
 	this->SetActorRelativeRotation(newRotation);
 }
 

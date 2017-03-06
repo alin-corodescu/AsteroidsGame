@@ -53,6 +53,12 @@ protected:
 
 	void SetCanFire();
 
+	// Handle for the Change Rotation function
+	FTimerHandle TimerHandle_ChangeRotation;
+
+	void ChangeRotation();
+
+
 	UPROPERTY(EditAnywhere)
 	FVector MovementDirection;
 

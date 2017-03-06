@@ -53,7 +53,7 @@ void ASaucer::BeginPlay()
 	FTimerHandle TimerHandle_StartOffset;
 	// Wait 2 seconds before firing the first time
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_StartOffset, this, &ASaucer::SetCanFire, 2.0f);
-
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ChangeRotation, this, &ASaucer::ChangeRotation, 5.0f);
 	LastUsedRotation = GetActorRotation();
 	MovementDirection = GenerateMovementDirection();
 }
@@ -132,6 +132,20 @@ void ASaucer::Fire()
 void ASaucer::SetCanFire()
 {
 	CanFire = true;
+}
+
+void ASaucer::ChangeRotation()
+{
+	float YawDelta = FMath::RandRange(-30, 30);
+	// Generate a random rotation
+	FRotator rotation(0, YawDelta ,0);
+
+	this->SetActorRotation(GetActorRotation() + rotation);
+
+	this->LastUsedRotation = GetActorRotation();
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_ChangeRotation);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ChangeRotation,this,&ASaucer::ChangeRotation,FMath::RandRange(3,7));
+
 }
 
 FVector ASaucer::GenerateMovementDirection()
