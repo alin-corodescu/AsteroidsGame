@@ -12,8 +12,8 @@ void ASimpleHUD::DrawScore()
 	
 	FText ScoreString = FText::Format(LOCTEXT("TestFormat", "Score: {0}"),
 		FText::AsNumber(CurrentState->GetScore()));
-	
-	FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 100), 15);
+	int size = ScoreString.ToString().Len();
+	FVector2D TextCentrePos = FVector2D((Canvas->SizeX - 12 * size), 15);
 	FCanvasTextItem TextItem(TextCentrePos, ScoreString,
 		HUDFont, FLinearColor::Blue);
 	Canvas->DrawItem(TextItem);

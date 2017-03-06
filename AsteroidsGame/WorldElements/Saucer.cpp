@@ -143,7 +143,9 @@ void ASaucer::ChangeRotation()
 	this->SetActorRotation(GetActorRotation() + rotation);
 
 	this->LastUsedRotation = GetActorRotation();
+	// Drop the previous timer
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_ChangeRotation);
+	// Set up another random timer
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ChangeRotation,this,&ASaucer::ChangeRotation,FMath::RandRange(3,7));
 
 }
