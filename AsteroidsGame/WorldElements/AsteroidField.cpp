@@ -39,8 +39,11 @@ void AsteroidField::BreakUpAsteroid(AAsteroid * asteroid)
 	//UE_LOG(LogTemp, Warning, TEXT("Breaking function called Called"));
 	Types type = activeAsteroids.find(asteroid)->second;
 	FVector spawnLocation = asteroid->GetActorLocation();
+	FRotator initialRotation = asteroid->GetActorRotation();
 	FRotator positiveRot(0,FMath::RandRange(10.0f, 30.0f) ,0);
+	positiveRot += initialRotation;
 	FRotator negativeRot(0, FMath::RandRange(-30.0f, -10.0f) ,0);
+	negativeRot += initialRotation;
 	switch (type)
 	{
 	case Large:
@@ -100,7 +103,7 @@ void AsteroidField::SpawnAsteroids(int Count)
 			SpawnLocation.Z = 0;
 			break;
 		}
-		//rotation.Yaw = FMath::RandRange(-90.0f, 90.0f);
+		rotation.Yaw = FMath::RandRange(-90.0f, 90.0f);
 		ConstructAsteroid(SpawnLocation, rotation, Large, FMath::RandBool());
 	}
 }

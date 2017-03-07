@@ -15,7 +15,7 @@ AStaticCameraController::AStaticCameraController()
 
 	// Set the actual RootComponent
 	RootComponent = CameraComponent;
-	FVector MyFVector(0.0f, 0.0f, 1500.0f);
+	FVector MyFVector(0.0f, 0.0f, 2000.0f);
 	CameraComponent->SetWorldLocation(MyFVector);
 	FRotator MyFRotator(-90.0f, 0.0f, -90.0f);
 	CameraComponent->SetWorldRotation(MyFRotator);

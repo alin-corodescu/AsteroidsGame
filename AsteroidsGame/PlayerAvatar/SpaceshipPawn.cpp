@@ -45,6 +45,8 @@ ASpaceshipPawn::ASpaceshipPawn()
 	}
 
 	movementManager = WorldBoundaries::GetInstance();
+
+	bIsInvulnerable = false;
 }
 
 // Called when the game starts or when spawned
@@ -65,7 +67,6 @@ void ASpaceshipPawn::BeginPlay()
 void ASpaceshipPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
 	// Move Forward and back.
 	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaTime, 0.f, 0.f);
 	// Move forwards (with sweep so we stop when we collide with things)
@@ -149,7 +150,7 @@ void ASpaceshipPawn::MoveForwardInput(float Val)
 	else
 	{
 		if (CurrentForwardSpeed > 10.0f)
-			CurrentForwardSpeed /= 1.005f;
+			CurrentForwardSpeed /= 1.05f;
 		else
 			CurrentForwardSpeed = 0;
 	}
@@ -162,15 +163,31 @@ void ASpaceshipPawn::FireForwardInput(float Val)
 }
 void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
-	// Debug some info to the screen if needed
-	if (GEngine)
+	if (!bIsInvulnerable)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Spaceship Hit! -> ") + OtherActor->GetName());
-	}
+		// Debug some info to the screen if needed
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Spaceship Hit! -> ") + OtherActor->GetName());
+		}
 
-	// Get the player state
-	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
-	CurrentState->modifyLives(-1);
+		// Get the player state
+		AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
+		CurrentState->modifyLives(-1);
+		this->MakeInvulnerable();
+		// Make the spaceship invulnerable for 5 secs;
+		FTimerHandle InvulnerabilityTimer;
+		GetWorld()->GetTimerManager().SetTimer(InvulnerabilityTimer, this, &ASpaceshipPawn::RemoveInvulnerable, 5.0);
+		this->SetActorLocation(FVector(0, 0, 0));
+	}
+}
+void ASpaceshipPawn::MakeInvulnerable()
+{
+	bIsInvulnerable = true;
+}
+void ASpaceshipPawn::RemoveInvulnerable()
+{
+	bIsInvulnerable = false;
 }
 // Sets shot flag to true. Used by a timer event
 void ASpaceshipPawn::ShotTimerExpired()

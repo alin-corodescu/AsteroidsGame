@@ -30,6 +30,10 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector
 			NormalImpulse, const FHitResult& Hit);
+
+	void MakeInvulnerable();
+
+	void RemoveInvulnerable();
 private:
 	// The mesh component
 	class UStaticMeshComponent* ShipMeshComponent;
@@ -56,4 +60,6 @@ private:
 	float MaxSpeed;
 
 	class WorldBoundaries* movementManager;
+	
+	bool bIsInvulnerable;
 };
