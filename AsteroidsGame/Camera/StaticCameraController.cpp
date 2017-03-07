@@ -2,7 +2,6 @@
 
 #include "AsteroidsGame.h"
 #include "StaticCameraController.h"
-#include "../WorldElements/AsteroidField.h"
 #include "../WorldElements/WorldBoundaries.h"
 
 // Sets default values
@@ -16,14 +15,7 @@ AStaticCameraController::AStaticCameraController()
 
 	// Set the actual RootComponent
 	RootComponent = CameraComponent;
-}
-
-// Called when the game starts or when spawned
-void AStaticCameraController::BeginPlay()
-{
-	Super::BeginPlay();
-	// Set the position and rotation of the camera.
-	FVector MyFVector(0.0f, 0.0f, 1500.0f) ;
+	FVector MyFVector(0.0f, 0.0f, 1500.0f);
 	CameraComponent->SetWorldLocation(MyFVector);
 	FRotator MyFRotator(-90.0f, 0.0f, -90.0f);
 	CameraComponent->SetWorldRotation(MyFRotator);
@@ -33,6 +25,12 @@ void AStaticCameraController::BeginPlay()
 	UE_LOG(Initialization, Warning, TEXT("Camera's aspect ratio is %f"), CameraComponent->AspectRatio)
 
 	WorldBoundaries::GetInstance()->SetUpLimits(CameraComponent);
+}
+
+// Called when the game starts or when spawned
+void AStaticCameraController::BeginPlay()
+{
+	Super::BeginPlay();
 
 	UWorld* const World = GetWorld();
 
@@ -43,8 +41,6 @@ void AStaticCameraController::BeginPlay()
 		{
 			PlayerController->SetViewTarget(this);
 		}
-		AsteroidField* field = new AsteroidField(World);
-		field->SpawnAsteroids(4);
 	}
 
 
@@ -55,6 +51,5 @@ void AStaticCameraController::BeginPlay()
 void AStaticCameraController::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
 }
 

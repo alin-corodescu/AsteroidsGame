@@ -4,14 +4,14 @@
 #include "AsteroidField.h"
 #include "WorldBoundaries.h"
 #include "Asteroid.h"
-#include "LargeSaucer.h"
+#include "Spawner.h"
 
 float AsteroidField::DefaultScale = 9.0f;
 float AsteroidField::SpeedScale = 100.0f;
 
 AAsteroid * AsteroidField::ConstructAsteroid(FVector SpawnLocation, FRotator SpawnRotation, Types type, bool NegativeMovement)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ConstructAsteroid Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("ConstructAsteroid Called"));
 	FVector scale(DefaultScale, DefaultScale, DefaultScale);
 	AAsteroid* NewActor = world->SpawnActor<AAsteroid>(SpawnLocation, SpawnRotation);
 	NewActor->SetParent(this);
@@ -36,22 +36,24 @@ AAsteroid * AsteroidField::ConstructAsteroid(FVector SpawnLocation, FRotator Spa
 void AsteroidField::BreakUpAsteroid(AAsteroid * asteroid)
 {
 	// Get the type of the asteroid that need to be broken
-	UE_LOG(LogTemp, Warning, TEXT("Breaking function called Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("Breaking function called Called"));
 	Types type = activeAsteroids.find(asteroid)->second;
 	FVector spawnLocation = asteroid->GetActorLocation();
+	FRotator positiveRot(0,FMath::RandRange(10.0f, 30.0f) ,0);
+	FRotator negativeRot(0, FMath::RandRange(-30.0f, -10.0f) ,0);
 	switch (type)
 	{
 	case Large:
 		spawnLocation.X += 100;
-		ConstructAsteroid(spawnLocation, FRotator(0, 0, 0), Medium, false);
+		ConstructAsteroid(spawnLocation, positiveRot, Medium, false);
 		spawnLocation.X -= 200;
-		ConstructAsteroid(spawnLocation, FRotator(0, 0, 0), Medium, true);
+		ConstructAsteroid(spawnLocation, negativeRot, Medium, true);
 		break;
 	case Medium:
 		spawnLocation.X += 100;
-		ConstructAsteroid(spawnLocation, FRotator(0, 0, 0), Small, false);
+		ConstructAsteroid(spawnLocation, positiveRot, Small, false);
 		spawnLocation.X -= 200;
-		ConstructAsteroid(spawnLocation, FRotator(0, 0, 0), Small, true);
+		ConstructAsteroid(spawnLocation, negativeRot, Small, true);
 		break;
 	default: /* To be completed */ break;
 	}
@@ -72,9 +74,7 @@ void AsteroidField::SpawnAsteroids(int Count)
 {
 	int i;
 	FVector SpawnLocation(worldEdges->Left,worldEdges->Top,0);
-	FRotator rotation(0,0,0);
-	ALargeSaucer* saucer = world->SpawnActor<ALargeSaucer>(SpawnLocation, rotation);
-	//saucer->SetMovementDirection(FVector(100, 100, 0));
+	FRotator rotation;
 	for (i = 0; i < Count; i++)
 	{
 		switch (i % 4)
@@ -100,21 +100,25 @@ void AsteroidField::SpawnAsteroids(int Count)
 			SpawnLocation.Z = 0;
 			break;
 		}
-
-		//ConstructAsteroid(SpawnLocation, rotation, Large, FMath::RandBool());
+		//rotation.Yaw = FMath::RandRange(-90.0f, 90.0f);
+		ConstructAsteroid(SpawnLocation, rotation, Large, FMath::RandBool());
 	}
 }
 
 void AsteroidField::NotifyDestruction(AAsteroid * asteroid)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Notify destruction Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("Notify destruction Called"));
 	std::map<AAsteroid*, Types>::iterator it = activeAsteroids.find(asteroid);
 	Types type = it->second;
 	if (type != Small)
 		BreakUpAsteroid(asteroid);
 	if (it != activeAsteroids.end())
-	{
 		activeAsteroids.erase(it);
-	}
+	if (activeAsteroids.empty())
+		spawner->NextSetOfAsteroids();
 }
 
+void AsteroidField::addSpawner(ASpawner * spawner)
+{
+	this->spawner = spawner;
+}

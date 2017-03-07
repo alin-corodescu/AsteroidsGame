@@ -23,7 +23,7 @@ private:
 
 	/* Spawns the 2 smaller asteroids after this one is destroyed*/
 	void BreakUpAsteroid(AAsteroid* asteroid);
-
+	class ASpawner* spawner;
 public:
 	AsteroidField(UWorld* world);
 	~AsteroidField();
@@ -36,5 +36,6 @@ public:
 
 	/* Notifies the AsteroidField that an asteroid has been destroyed */
 	void NotifyDestruction(AAsteroid* asteroid);
-	
+
+	void addSpawner(ASpawner * spawner);
 };

@@ -9,7 +9,7 @@
 // Sets default values
 ASaucer::ASaucer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Saucer constructor called called Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("Saucer constructor called called Called"));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	// Get the player pawn to find it's location

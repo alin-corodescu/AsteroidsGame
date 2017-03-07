@@ -8,6 +8,9 @@
 void ASmallSaucer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	this->SetActorScale3D(FVector(0.5,0.5,0.5));
+
 	UE_LOG(LogTemp, Warning, TEXT("Small saucer begin called"));
 	// Set the accuracy parameters based on the score
 	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(PlayerPawn->PlayerState);

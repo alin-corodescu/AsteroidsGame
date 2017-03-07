@@ -10,6 +10,7 @@
 class ASTEROIDSGAME_API WorldBoundaries
 {
 	friend class AsteroidField;
+	friend class ASpawner;
 private:
 	WorldBoundaries();
 	~WorldBoundaries();

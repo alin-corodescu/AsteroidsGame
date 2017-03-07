@@ -104,3 +104,5 @@ Types AAsteroid::GetType()
 {
 	return type;
 }
+
+
