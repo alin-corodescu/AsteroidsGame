@@ -26,6 +26,8 @@ public:
 	// Fire forward
 	void FireForwardInput(float Val);
 
+	void HyperspaceInput();
+
 	// Function to handle the projectile hitting something
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector

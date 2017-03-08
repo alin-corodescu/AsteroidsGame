@@ -130,6 +130,8 @@ void ASpaceshipPawn::SetupPlayerInputComponent(class UInputComponent* InputCompo
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 	// Bind movement to callback functions.
+	InputComponent->BindAction("Hyperspace", IE_Pressed, this, &ASpaceshipPawn::HyperspaceInput);
+
 	InputComponent->BindAxis("MoveForward", this, &ASpaceshipPawn::MoveForwardInput);
 	InputComponent->BindAxis("MoveRight", this, &ASpaceshipPawn::MoveRightInput);
 	InputComponent->BindAxis("FireForward", this, &ASpaceshipPawn::FireForwardInput);
@@ -170,6 +172,15 @@ void ASpaceshipPawn::MoveForwardInput(float Val)
 void ASpaceshipPawn::FireForwardInput(float Val)
 {
 	CurrentFireValue = Val;
+}
+void ASpaceshipPawn::HyperspaceInput()
+{
+	FVector newLocation;
+	newLocation.X = FMath::RandRange(movementManager->Left, movementManager->Right);
+	newLocation.Y = FMath::RandRange(movementManager->Bottom, movementManager->Top);
+	newLocation.Z = 0;
+
+	SetActorLocation(newLocation);
 }
 void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {

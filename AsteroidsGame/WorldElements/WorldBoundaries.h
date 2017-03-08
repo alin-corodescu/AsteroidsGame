@@ -11,6 +11,7 @@ class ASTEROIDSGAME_API WorldBoundaries
 {
 	friend class AsteroidField;
 	friend class ASpawner;
+	friend class ASpaceshipPawn;
 private:
 	WorldBoundaries();
 	~WorldBoundaries();
