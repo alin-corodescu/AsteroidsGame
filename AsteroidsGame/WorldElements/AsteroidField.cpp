@@ -77,7 +77,7 @@ void AsteroidField::SpawnAsteroids(int Count)
 {
 	int i;
 	FVector SpawnLocation(worldEdges->Left,worldEdges->Top,0);
-	FRotator rotation;
+	FRotator rotation(0,0,0);
 	for (i = 0; i < Count; i++)
 	{
 		switch (i % 4)

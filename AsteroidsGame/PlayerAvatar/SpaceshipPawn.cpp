@@ -205,10 +205,12 @@ void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 void ASpaceshipPawn::MakeInvulnerable()
 {
 	bIsInvulnerable = true;
+	SetActorEnableCollision(false);
 }
 void ASpaceshipPawn::RemoveInvulnerable()
 {
 	bIsInvulnerable = false;
+	SetActorEnableCollision(true);
 }
 bool ASpaceshipPawn::IsInvulnerable()
 {

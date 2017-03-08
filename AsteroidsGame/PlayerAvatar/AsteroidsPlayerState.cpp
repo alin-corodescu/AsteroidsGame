@@ -37,5 +37,8 @@ void AAsteroidsPlayerState::modifyLives(int count)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Game should end !"));
 		}
+		APlayerController* const player = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
+		player->SetPause(true);
+		
 	}
 }

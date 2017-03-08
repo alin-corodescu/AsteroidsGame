@@ -19,6 +19,7 @@ private:
 	int NumberOfLives;
 
 public:
+	UFUNCTION()
 	int GetScore();
 	void SetScore(int newScore);
 	void modifyScore(int amount);
