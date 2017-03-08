@@ -67,14 +67,23 @@ void ASpaceshipPawn::BeginPlay()
 void ASpaceshipPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+
 	// best invulnerability animation EVER
 	if (IsInvulnerable())
 	{
-		static bool displayedLastFrame = true;
-		SetActorHiddenInGame(displayedLastFrame);
-		displayedLastFrame = !displayedLastFrame;
+		// Trigger visibility every 0.1 sec
+		static float DisplayTimer = 0.1f;
+		static bool invisible = true;
+		DisplayTimer -= DeltaTime;
+		if (DisplayTimer <= 0)
+		{
+			SetActorHiddenInGame(invisible);
+			DisplayTimer = 0.1f;
+			invisible = !invisible;
+		}
 	}
 	else
+		// Make sure the actor is showing when not invulnerable
 		SetActorHiddenInGame(false);
 
 	// Move Forward and back.
@@ -89,19 +98,18 @@ void ASpaceshipPawn::Tick( float DeltaTime )
 	// Rotate spaceship
 	AddActorLocalRotation(DeltaRotation);
 
-	// Fire.
+	// Consume fire input
 	if (CurrentFireValue == 1.0f)
 	{
 		if (CanFire)
 		{
-			// Temp spawn rotation
+			// Spawn rotation
 			FRotator SpawnRotation = this->GetActorRotation();
-			SpawnRotation;
-			// Temp spawn location
+			// Spawn location
 			FVector SpawnLocation = GetActorLocation();
 			FVector ForwardVector = GetActorForwardVector();
 			ForwardVector = ForwardVector * GunOffset;
-			// Update spawn location to relect to offset
+			// Update spawn location to reflect to offset
 			SpawnLocation = SpawnLocation + ForwardVector;
 
 			UWorld* const World = GetWorld();
@@ -115,8 +123,11 @@ void ASpaceshipPawn::Tick( float DeltaTime )
 				{
 					UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 				}
+				// Set up timer to update the CanFire flag
 				World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this,
 					&ASpaceshipPawn::ShotTimerExpired, FireRate);
+
+				// Wait until we can fire again
 				CanFire = false;
 			}
 		}
@@ -176,6 +187,8 @@ void ASpaceshipPawn::FireForwardInput(float Val)
 void ASpaceshipPawn::HyperspaceInput()
 {
 	FVector newLocation;
+
+	// Generate a random Location
 	newLocation.X = FMath::RandRange(movementManager->Left, movementManager->Right);
 	newLocation.Y = FMath::RandRange(movementManager->Bottom, movementManager->Top);
 	newLocation.Z = 0;
@@ -186,19 +199,17 @@ void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if (!bIsInvulnerable)
 	{
-		// Debug some info to the screen if needed
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Spaceship Hit! -> ") + OtherActor->GetName());
-		}
-
 		// Get the player state
 		AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
+		// Reduce the number of lives;
 		CurrentState->modifyLives(-1);
-		this->MakeInvulnerable();
+
 		// Make the spaceship invulnerable for 5 secs;
+		this->MakeInvulnerable();
 		FTimerHandle InvulnerabilityTimer;
 		GetWorld()->GetTimerManager().SetTimer(InvulnerabilityTimer, this, &ASpaceshipPawn::RemoveInvulnerable, 5.0);
+
+		// Reset the ship's position;
 		this->SetActorLocation(FVector(0, 0, 0));
 	}
 }

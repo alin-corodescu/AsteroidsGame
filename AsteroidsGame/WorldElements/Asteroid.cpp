@@ -6,7 +6,6 @@
 #include "AsteroidField.h"
 
 // Sets default values
-// Sets default values
 AAsteroid::AAsteroid()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,17 +18,18 @@ AAsteroid::AAsteroid()
 	// Set the mesh for the static mesh component.
 	ConstructorHelpers::FObjectFinder<UStaticMesh>
 		AsteroidAsset(TEXT("StaticMesh'/Game/ExampleContent/Landscapes/Meshes/SM_Rock.SM_Rock'"));
+
 	// If the mesh was found set it and set properties.
 	if (AsteroidAsset.Succeeded())
 	{
 		AsteroidVisual->SetStaticMesh(AsteroidAsset.Object);
 	}
 
-	// set up a notification for when this component hits something
+	// Set up the callback for collision
 	AsteroidVisual->OnComponentHit.AddDynamic(this, &AAsteroid::OnHit);
 	
+	// Get the singleton instance of the WorldBoundaries class
 	movementManager = WorldBoundaries::GetInstance();
-	this->parent = parent;
 }
 
 // Called when the game starts or when spawned
@@ -42,9 +42,12 @@ void AAsteroid::BeginPlay()
 void AAsteroid::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+
+	// Move the actor, with collision (sweep)
 	FVector location = movementDirection * DeltaTime;
 	this->AddActorLocalOffset(location, true);
-	//this->SetActorLocation(this->GetActorLocation() + movementDirection * DeltaTime,true);
+
+	// Corret the actor's position, if necessary
 	movementManager->CorrectPosition(this);
 }
 
@@ -52,24 +55,15 @@ void AAsteroid::Tick( float DeltaTime )
 void AAsteroid::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent*
 	OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Debug some info to the screen if needed
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! -> ") + OtherActor->GetName());
-	}
-	// Another better approach:
+	// If collision occured with another asteroid, ignore it
 	if (this->IsA(OtherActor->GetActorClass()))
 	{
 		AsteroidVisual->MoveIgnoreActors.Add(OtherActor);
-		// A debug message
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Asteroid Hit! Ignore collision.") );
-		}
 		return;
 	}
-	// We can destroy the asteroid
+	// Callback for the AsteroidField upon destruction
 	parent->NotifyDestruction(this);
+	// We can destroy the asteroid
 	Destroy();
 }
 
@@ -80,11 +74,12 @@ void AAsteroid::SetParent(AsteroidField* parent)
 
 int AAsteroid::AwardScore() const
 {
+	// Awards different scores based on type
 	switch (type)
 	{
-	case Large: return 20;
-	case Medium: return 50;
-	case Small: return 100;
+		case Large: return 20;
+		case Medium: return 50;
+		case Small: return 100;
 	}
 	return 0;
 }

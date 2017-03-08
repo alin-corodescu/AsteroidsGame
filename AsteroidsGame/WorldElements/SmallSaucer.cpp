@@ -9,9 +9,9 @@ void ASmallSaucer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// We are playing with a SMALL saucer
 	this->SetActorScale3D(FVector(0.5,0.5,0.5));
 
-	UE_LOG(LogTemp, Warning, TEXT("Small saucer begin called"));
 	// Set the accuracy parameters based on the score
 	AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(PlayerPawn->PlayerState);
 	int score = CurrentState->GetScore();
@@ -35,19 +35,25 @@ void ASmallSaucer::BeginPlay()
 
 FVector ASmallSaucer::GenerateMovementDirection()
 {
-	return FVector(200,0,0);
+	return FVector(450,0,0);
 }
 
 void ASmallSaucer::EnterTargetingState()
 {
+	// Face the player
 	FRotator newRotation = (PlayerPawn->GetActorLocation() - this->GetActorLocation()).Rotation();
+
+	// Decrease the accuracy a bit
 	float accuracyDelta = FMath::RandRange(accuracyRange.first, accuracyRange.second);
 	newRotation.Yaw += accuracyDelta;
+
+	// Set the rotation to prepare for fire
 	this->SetActorRelativeRotation(newRotation);
 }
 
 void ASmallSaucer::ExitTargetingState()
 {
+	// Reset the rotation to the last used
 	this->SetActorRotation(LastUsedRotation);
 }
 int ASmallSaucer::AwardScore() const

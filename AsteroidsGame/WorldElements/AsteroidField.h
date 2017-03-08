@@ -11,6 +11,7 @@ class ASTEROIDSGAME_API AsteroidField
 {
 private:
 	//! Map containing pointers to the spawned asteroids.
+	/*! Could be a std::set really, but refactoring takes precious time */
 	std::map<AAsteroid*,Types> activeAsteroids;
 
 	//! Class used to get the get the coordinates of the world edges
@@ -27,7 +28,7 @@ private:
 	static float SpeedScale;
 	
 	/*! Constructs a new Asteroid of the specified type at the spawn location */
-	AAsteroid* ConstructAsteroid(FVector SpawnLocation, FRotator SpawnRotation, Types type, bool NegativeMovement = false);
+	AAsteroid* ConstructAsteroid(FVector SpawnLocation, FRotator SpawnRotation, Types type);
 
 	/*! Spawns the 2 smaller asteroids after this one is destroyed*/
 	void BreakUpAsteroid(AAsteroid* asteroid);
@@ -38,9 +39,6 @@ private:
 public:
 	//! Constructor with world as argument
 	AsteroidField(UWorld* world);
-
-	//! Default Destructor
-	~AsteroidField();
 
 	/**
 	 *	Spawns a new set of large asteroids on the edges

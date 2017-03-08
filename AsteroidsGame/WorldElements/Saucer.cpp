@@ -9,27 +9,34 @@
 // Sets default values
 ASaucer::ASaucer()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Saucer constructor called called Called"));
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Offset at which to spawn the projectile
 	GunOffset = 100.0f;
+
+	// Fire once every 2 seconds
 	FireRate = 2.0f;
-	//actually wait 2 seconds before firing
+
+	// Do not fire right away
 	CanFire = false;
 
+	// Set up the root component collision
 	SaucerMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SaucerMesh"));
 	RootComponent = SaucerMeshComponent;
 	SaucerMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 
+	// Add the callback for collision
 	SaucerMeshComponent->OnComponentHit.AddDynamic(this, &ASaucer::OnHit);
+
 	// Get the ship mesh.
-	// change it to the Saucer asset
+	// Should use a different mesh for saucers
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 		SaucerMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
+
 	// If the mesh was found set it and set properties.
 	if (SaucerMesh.Succeeded())
 		SaucerMeshComponent->SetStaticMesh(SaucerMesh.Object);
+
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
 		FireAudio(TEXT("SoundWave'/Game/TwinStick/Audio/TwinStickFire.TwinStickFire'"));
@@ -37,8 +44,8 @@ ASaucer::ASaucer()
 	{
 		FireSound = FireAudio.Object;
 	}
-	// set a LifeSpan of 10.0s
-	//this->InitialLifeSpan = 10.0f;
+
+	// Get the singleton instance of this class
 	movementManager = WorldBoundaries::GetInstance();
 
 }
@@ -48,12 +55,21 @@ void ASaucer::BeginPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Saucer begin called"));
 	Super::BeginPlay();
-	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	//PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
 	FTimerHandle TimerHandle_StartOffset;
+
 	// Wait 2 seconds before firing the first time
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_StartOffset, this, &ASaucer::SetCanFire, 2.0f);
+
+	// Set up a timer to change rotation after 5 seconds
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ChangeRotation, this, &ASaucer::ChangeRotation, 5.0f);
+	
+	// Store the current rotation
 	LastUsedRotation = GetActorRotation();
+
+	// Generate a movement direction specific to the actual class of this instance
 	MovementDirection = GenerateMovementDirection();
 }
 
@@ -62,9 +78,10 @@ void ASaucer::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	// Fire if possible
 	if (CanFire)
 	{
-		// Rotates the Saucer towards the player
+		
 		EnterTargetingState();
 
 		Fire();
@@ -72,14 +89,15 @@ void ASaucer::Tick( float DeltaTime )
 		ExitTargetingState();
 	}
 
+	// Update the location of this actor
 	FVector location = MovementDirection * DeltaTime;
 	this->AddActorLocalOffset(location, true);
 	movementManager->CorrectPosition(this);
-	//handle the modification of the MovementDirection
 }
 
 int ASaucer::AwardScore() const
 {
+	// AwardScore() is overridden by both Small and Large  Saucer, so this should never be called
 	return 0;
 }
 
@@ -96,19 +114,15 @@ FVector ASaucer::GetMovementDirection()
 void ASaucer::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
 	// Should be safe to use since it occurs at the end of the tick
-	// Debug some info to the screen if needed
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Saucer Hit! -> ") + OtherActor->GetName());
-	}
+	// The timers should get deleted with the handles
 	this->Destroy();
 }
 
 void ASaucer::Fire()
 {
-	// Temp spawn rotation		
+	// Spawn rotation		
 	FRotator SpawnRotation = GetActorRotation();
-	// Temp spawn location
+	// Spawn location
 	FVector SpawnLocation = GetActorLocation();
 	FVector ForwardVector = GetActorForwardVector();
 	ForwardVector = ForwardVector * GunOffset;
@@ -125,6 +139,7 @@ void ASaucer::Fire()
 			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 		}
 		CanFire = false;
+		// Set a timer to reset the CanFire flag
 		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASaucer::SetCanFire, FireRate);
 	}
 }
@@ -139,9 +154,12 @@ void ASaucer::ChangeRotation()
 	// Generate a random rotation
 	FRotator rotation(0, YawDelta ,0);
 
+	// Change the rotation with the given delta
 	this->SetActorRotation(GetActorRotation() + rotation);
-
+	
+	// Store this new rotation
 	this->LastUsedRotation = GetActorRotation();
+
 	// Drop the previous timer
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_ChangeRotation);
 	// Set up another random timer
@@ -151,16 +169,18 @@ void ASaucer::ChangeRotation()
 
 FVector ASaucer::GenerateMovementDirection()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Wrong generate called"));
+	// Should never be called be cause it is overridden
 	return FVector(100,0,0);
 }
 
 void ASaucer::EnterTargetingState()
 {
+	// Should never be called be cause it is overridden
 	return;
 }
 
 void ASaucer::ExitTargetingState()
 {
+	// Should never be called be cause it is overridden
 	return;
 }

@@ -15,6 +15,7 @@ AStaticCameraController::AStaticCameraController()
 
 	// Set the actual RootComponent
 	RootComponent = CameraComponent;
+
 	FVector MyFVector(0.0f, 0.0f, 2000.0f);
 	CameraComponent->SetWorldLocation(MyFVector);
 	FRotator MyFRotator(-90.0f, 0.0f, -90.0f);
@@ -22,7 +23,6 @@ AStaticCameraController::AStaticCameraController()
 	CameraComponent->SetProjectionMode(ECameraProjectionMode::Type::Orthographic);
 	CameraComponent->OrthoWidth = 3000;
 	CameraComponent->bConstrainAspectRatio = true;
-	UE_LOG(Initialization, Warning, TEXT("Camera's aspect ratio is %f"), CameraComponent->AspectRatio)
 
 	WorldBoundaries::GetInstance()->SetUpLimits(CameraComponent);
 }

@@ -16,6 +16,7 @@ WorldBoundaries::~WorldBoundaries()
 
 WorldBoundaries * WorldBoundaries::GetInstance()
 {
+	// Typical singleton set-up
 	if (instance == NULL)
 	{
 		instance = new WorldBoundaries();
@@ -25,6 +26,7 @@ WorldBoundaries * WorldBoundaries::GetInstance()
 
 void WorldBoundaries::SetUpLimits(const UCameraComponent * camera)
 {
+	// Compute the limits of the world based on the camera view
 	float Width = camera->OrthoWidth;
 	float Height = Width / camera->AspectRatio;
 	Left = -Width / 2.0;
@@ -41,6 +43,7 @@ bool WorldBoundaries::CorrectPosition(AActor* actor)
 	actorLoc = actor->GetActorLocation();
 	bool edgeOfWorld = false;
 
+	// Test if the actor is outside the world edges
 	if (actorLoc.X < Left)
 	{
 		actorLoc.X = Right;

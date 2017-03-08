@@ -5,18 +5,20 @@
 
 FVector ALargeSaucer::GenerateMovementDirection()
 {
-	return FVector(100,0,0);
+	return FVector(300,0,0);
 }
 
 void ALargeSaucer::EnterTargetingState()
 {
-	FRotator newRotation;
+	// Set a random rotation
+	FRotator newRotation(0,0,0);
 	newRotation.Yaw = FMath::FRandRange(-180, 180);
 	this->SetActorRelativeRotation(newRotation);
 }
 
 void ALargeSaucer::ExitTargetingState()
 {
+	// Restore the last used roation
 	this->SetActorRotation(LastUsedRotation);
 }
 

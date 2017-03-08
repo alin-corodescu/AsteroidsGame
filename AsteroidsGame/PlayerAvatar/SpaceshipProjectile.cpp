@@ -8,11 +8,11 @@
 
 
 // Sets default values
-// Sets default values
 ASpaceshipProjectile::ASpaceshipProjectile()
 {
 	// Set this actor to call Tick() every frame.
-		PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Static reference to the mesh to use for the projectile
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 		ProjectileMeshAsset(TEXT("StaticMesh'/Game/TwinStick/Meshes/TwinStickProjectile.TwinStickProjectile'"
@@ -27,23 +27,26 @@ ASpaceshipProjectile::ASpaceshipProjectile()
 	ProjectileMesh->BodyInstance.SetCollisionProfileName("Projectile");
 	// Set the root component to the mesh
 	RootComponent = ProjectileMesh;
-	// set up a notification for when this component hits something
+	// Set up a callback for when this component hits something
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &ASpaceshipProjectile::OnHit);
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement =
 		CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement0"));
 	ProjectileMovement->UpdatedComponent = ProjectileMesh;
-	ProjectileMovement->InitialSpeed = 1000.f;
-	ProjectileMovement->MaxSpeed = 1000.f;
+	ProjectileMovement->InitialSpeed = 3000.f;
+	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0.f; // No gravity
-													  // Die after 3 seconds by default. This is a property of AActor
-	InitialLifeSpan = 3.0f;
+
+	// Die after 0.5 sec if no collision
+	InitialLifeSpan = 0.5f;
+
 	// Set the scale of the projectile
 	FVector scale(1.0f, 1.0f, 1.0f);
 	this->SetActorScale3D(scale);
 
+	// Get the singleton instance of the WorldBoundaries class
 	movementManager = WorldBoundaries::GetInstance();
 }
 
@@ -58,35 +61,33 @@ void ASpaceshipProjectile::BeginPlay()
 void ASpaceshipProjectile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+	// Keep the actor within the world boundaries
 	movementManager->CorrectPosition(this);
 }
 
 void ASpaceshipProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Debug some info to the screen if needed
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Projectile Hit! -> ") + OtherActor ->GetName());
-	}
-	// Safely destroy this object
-	//here i need to update the score
+	// Do the scoring if it is player owned
 	if (bIsPlayerOwned)
 	{
 		APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		AAsteroidsPlayerState* CurrentState = NULL;
 		if (Player)
 			CurrentState = Cast<AAsteroidsPlayerState>(Player->PlayerState);
-		//move when it sets bIsPlayerOwned;
 		 
+		// Check if the other actor should award score
 		bool bIsImplemented = OtherActor->GetClass()->ImplementsInterface(UAwardsScoreInterface::StaticClass());
 		if (bIsImplemented)
 		{
 			IAwardsScoreInterface* ScoringObject = Cast<IAwardsScoreInterface>(OtherActor);
+			// Add the score value to the current player score
 			if (CurrentState)
 				CurrentState->modifyScore(ScoringObject->AwardScore());
 		}
 	}
+
+	// Destory this object
 	Destroy();
 }
 
