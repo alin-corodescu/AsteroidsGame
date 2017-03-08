@@ -4,7 +4,9 @@
 
 #include "GameFramework/Actor.h"
 #include "StaticCameraController.generated.h"
-
+/**
+* Controller for the static camera used for the top-down view	
+*/
 UCLASS()
 class ASTEROIDSGAME_API AStaticCameraController : public AActor
 {
@@ -21,7 +23,7 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 private:
-	/** Camera Component */
+	/** Camera Component of the camera controller used by the player */
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComponent;
+	class UCameraComponent* CameraComponent; //!< Camera Component
 };

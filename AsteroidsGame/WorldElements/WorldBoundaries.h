@@ -4,8 +4,9 @@
 
 /**
  * Class used to constrain the movement of Actors 
- * within the world boundaries
- * -- could be turned into an abstract interface for flexibility --
+ * within the world boundaries. Used by all the dynamic actors
+ * to correct their positions as well as to get the coordinates
+ * of the world edges to be used in the spawning logic
  */
 class ASTEROIDSGAME_API WorldBoundaries
 {
@@ -15,17 +16,18 @@ class ASTEROIDSGAME_API WorldBoundaries
 private:
 	WorldBoundaries();
 	~WorldBoundaries();
-	// Pointer to the single instance of this class
+	//! Pointer to the single instance of this class
 	static WorldBoundaries* instance;
-	// Coordinates of the world boundaries
+	//! Coordinates of the world boundaries
 	float Right, Left, Top, Bottom;
 public:
-	// Static function used to access an instance
+	//! Static function used to access an instance
 	static WorldBoundaries* GetInstance();
 
-	/* Computes World Boundaries based on a orthographic static camera */
+	/** Computes World Boundaries based on an orthographic static camera */
 	void SetUpLimits(const UCameraComponent* camera);
 
+	/** Corrects the position of an actor to be within the world boundaries*/
 	bool CorrectPosition(AActor* actor);
 
 };

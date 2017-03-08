@@ -129,9 +129,9 @@ void ASpaceshipPawn::Tick( float DeltaTime )
 void ASpaceshipPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
+
 	// Bind movement to callback functions.
 	InputComponent->BindAction("Hyperspace", IE_Pressed, this, &ASpaceshipPawn::HyperspaceInput);
-
 	InputComponent->BindAxis("MoveForward", this, &ASpaceshipPawn::MoveForwardInput);
 	InputComponent->BindAxis("MoveRight", this, &ASpaceshipPawn::MoveRightInput);
 	InputComponent->BindAxis("FireForward", this, &ASpaceshipPawn::FireForwardInput);

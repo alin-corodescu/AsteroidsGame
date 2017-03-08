@@ -32,16 +32,10 @@ AAsteroid::AAsteroid()
 	this->parent = parent;
 }
 
-AAsteroid::~AAsteroid()
-{
-	//parent->NotifyDestruction(this);
-}
-
 // Called when the game starts or when spawned
 void AAsteroid::BeginPlay()
 {
 	Super::BeginPlay();
-	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
 // Called every frame
