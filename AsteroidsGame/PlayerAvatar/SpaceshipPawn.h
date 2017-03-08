@@ -34,6 +34,8 @@ public:
 	void MakeInvulnerable();
 
 	void RemoveInvulnerable();
+
+	bool IsInvulnerable();
 private:
 	// The mesh component
 	class UStaticMeshComponent* ShipMeshComponent;

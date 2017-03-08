@@ -13,7 +13,8 @@ class ASTEROIDSGAME_API ASimpleHUD : public AHUD
 {
 	GENERATED_BODY()
 
-		class AAsteroidsPlayerState* CurrentState;
+	class AAsteroidsPlayerState* CurrentState;
+	class ASpaceshipPawn* pawn;
 
 	void DrawScore();
 	void DrawLives();

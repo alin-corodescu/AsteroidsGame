@@ -67,6 +67,16 @@ void ASpaceshipPawn::BeginPlay()
 void ASpaceshipPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+	// best invulnerability animation EVER
+	if (IsInvulnerable())
+	{
+		static bool displayedLastFrame = true;
+		SetActorHiddenInGame(displayedLastFrame);
+		displayedLastFrame = !displayedLastFrame;
+	}
+	else
+		SetActorHiddenInGame(false);
+
 	// Move Forward and back.
 	const FVector LocalMove = FVector(CurrentForwardSpeed * DeltaTime, 0.f, 0.f);
 	// Move forwards (with sweep so we stop when we collide with things)
@@ -188,6 +198,10 @@ void ASpaceshipPawn::MakeInvulnerable()
 void ASpaceshipPawn::RemoveInvulnerable()
 {
 	bIsInvulnerable = false;
+}
+bool ASpaceshipPawn::IsInvulnerable()
+{
+	return bIsInvulnerable;
 }
 // Sets shot flag to true. Used by a timer event
 void ASpaceshipPawn::ShotTimerExpired()

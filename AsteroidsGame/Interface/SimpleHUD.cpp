@@ -3,6 +3,7 @@
 #include "AsteroidsGame.h"
 #include "SimpleHUD.h"
 #include "../PlayerAvatar/AsteroidsPlayerState.h"
+#include "../PlayerAvatar/SpaceshipPawn.h"
 
 #define LOCTEXT_NAMESPACE "SimpleHUD"
 
@@ -58,11 +59,18 @@ void ASimpleHUD::DrawHUD()
 		if (Player)
 			CurrentState = Cast<AAsteroidsPlayerState>(Player->PlayerState);
 		else return;
+
+		pawn = Cast<ASpaceshipPawn>(Player);
 	}
 
 	DrawScore();
 
 	DrawLives();
+	
+	if (pawn->IsInvulnerable())
+	{
+		// add here code to mark invulnerability
+	}
 
 }
 
