@@ -45,6 +45,13 @@ ASaucer::ASaucer()
 		FireSound = FireAudio.Object;
 	}
 
+
+	static ConstructorHelpers::FObjectFinder<USoundBase>
+		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+	if (DestructionAudio.Succeeded())
+	{
+		DestructionSound = DestructionAudio.Object;
+	}
 	// Get the singleton instance of this class
 	movementManager = WorldBoundaries::GetInstance();
 
@@ -53,7 +60,6 @@ ASaucer::ASaucer()
 // Called when the game starts or when spawned
 void ASaucer::BeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Saucer begin called"));
 	Super::BeginPlay();
 
 	//PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
@@ -115,7 +121,9 @@ void ASaucer::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimiti
 {
 	// Should be safe to use since it occurs at the end of the tick
 	// The timers should get deleted with the handles
+	UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
 	this->Destroy();
+
 }
 
 void ASaucer::Fire()

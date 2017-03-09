@@ -71,6 +71,8 @@ private:
 	FTimerHandle TimerHandle_ShotTimerExpired;
 	//! Sound to play each time we fire
 	class USoundBase* FireSound;
+	//! Sound to play when destroyed
+	class USoundBase* DestructionSound;
 	//! Sets shot flag to true. Used by a timer event
 	void ShotTimerExpired();
 

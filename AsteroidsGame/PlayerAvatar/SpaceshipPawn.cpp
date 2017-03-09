@@ -32,9 +32,10 @@ ASpaceshipPawn::ASpaceshipPawn()
 	CurrentForwardSpeed = 0.0f;
 	CurrentRotationSpeed = 0.0f;
 	CurrentFireValue = 0.0f;
+
 	// Set fire flag, fire rate and offset.
 	CanFire = true;
-	FireRate = 1.0f;
+	FireRate = 0.2f;
 	GunOffset = 70.0f;
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
@@ -43,6 +44,15 @@ ASpaceshipPawn::ASpaceshipPawn()
 	{
 		FireSound = FireAudio.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase>
+		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+	if (DestructionAudio.Succeeded())
+	{
+		DestructionSound = DestructionAudio.Object;
+	}
+
+
 
 	movementManager = WorldBoundaries::GetInstance();
 
@@ -155,7 +165,7 @@ void ASpaceshipPawn::MoveRightInput(float Val)
 	// Is there no input?
 	bool bHasInput = !FMath::IsNearlyEqual(Val, 0.f);
 	if (bHasInput)
-		CurrentRotationSpeed = Val * 100.0f;
+		CurrentRotationSpeed = Val * 200.0f;
 	else
 		CurrentRotationSpeed = 0;
 }
@@ -199,6 +209,7 @@ void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if (!bIsInvulnerable)
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
 		// Get the player state
 		AAsteroidsPlayerState* CurrentState = Cast<AAsteroidsPlayerState>(this->PlayerState);
 		// Reduce the number of lives;

@@ -48,6 +48,9 @@ public:
 	/* @see Types */
 	Types GetType(); //!< Getter for the type of the asteroid
 
+	//! Sound to play when destroyed
+	class USoundBase* DestructionSound;
+
 private:
 	//! A static mesh component. The visual representation of our actor
 	class UStaticMeshComponent* AsteroidVisual;

@@ -33,8 +33,8 @@ ASpaceshipProjectile::ASpaceshipProjectile()
 	ProjectileMovement =
 		CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement0"));
 	ProjectileMovement->UpdatedComponent = ProjectileMesh;
-	ProjectileMovement->InitialSpeed = 3000.f;
-	ProjectileMovement->MaxSpeed = 3000.f;
+	ProjectileMovement->InitialSpeed = 2300.f;
+	ProjectileMovement->MaxSpeed = 2300.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0.f; // No gravity

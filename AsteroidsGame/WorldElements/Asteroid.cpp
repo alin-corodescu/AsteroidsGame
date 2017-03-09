@@ -30,6 +30,15 @@ AAsteroid::AAsteroid()
 	
 	// Get the singleton instance of the WorldBoundaries class
 	movementManager = WorldBoundaries::GetInstance();
+
+	// Set up destruction sound
+	static ConstructorHelpers::FObjectFinder<USoundBase>
+		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+	if (DestructionAudio.Succeeded())
+	{
+		DestructionSound = DestructionAudio.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +70,7 @@ void AAsteroid::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		AsteroidVisual->MoveIgnoreActors.Add(OtherActor);
 		return;
 	}
+	UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
 	// Callback for the AsteroidField upon destruction
 	parent->NotifyDestruction(this);
 	// We can destroy the asteroid

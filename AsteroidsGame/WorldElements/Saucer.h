@@ -84,6 +84,9 @@ protected:
 	//! Used to constrain the movement of the Saucer within the world boundaries
 	class WorldBoundaries* movementManager;
 
+	//! Sound to play when destroyed
+	class USoundBase* DestructionSound;
+
 	/**
 	* Member used to store the rotation of the saucer.
 	* Used when exiting targeting state to restore the saucer to it's previous rotation.
@@ -106,4 +109,5 @@ protected:
 	*	EnterTargetingState(), has no effect otherwise.
 	*/
 	virtual void ExitTargetingState();
+
 };
