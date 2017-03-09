@@ -118,10 +118,8 @@ protected:
 	*/
 	class UAudioComponent* LoopingIndicatorMusic;
 
-	// Sound to play
+	//! Sound to play
 	USoundCue* AudioCue;
 
-	//! Number of active saucers
-	static int ActiveSaucersCount;
 
 };

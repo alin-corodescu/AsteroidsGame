@@ -4,8 +4,6 @@
 #include "../PlayerAvatar/SpaceshipProjectile.h"
 #include "WorldBoundaries.h"
 #include "Saucer.h"
-
-int ASaucer::ActiveSaucersCount = 0;
 // Sets default values
 ASaucer::ASaucer()
 {
@@ -54,33 +52,33 @@ ASaucer::ASaucer()
 	}
 	// Get the singleton instance of this class
 	movementManager = WorldBoundaries::GetInstance();
+
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	ConstructorHelpers::FObjectFinder<USoundCue> Cue(
-		TEXT("SoundCue'/Game/StarterContent/Audio/Starter_Background_Cue.Starter_Background_Cue'")
+		TEXT("SoundCue'/Game/Audio/police_Cue.police_Cue'")
 	);
 	// Store a reference to the Cue asset - we'll need it later.
 	AudioCue = Cue.Object;
 	// Create an audio component
-	LoopingIndicatorMusic = CreateDefaultSubobject<UAudioComponent>(
+	LoopingIndicatorMusic = CreateDefaultSubobject<UAudioComponent>( 
 		TEXT("SaucerAudioComponent")
 		);
 	// I don't want the sound playing the moment it's created.
 	LoopingIndicatorMusic->bAutoActivate = false;
 
 	LoopingIndicatorMusic->SetupAttachment(RootComponent);
+
 }
 
 ASaucer::~ASaucer()
 {
-	ActiveSaucersCount--;
-	// If this was the last saucer, stop playing the music
-	if (ActiveSaucersCount == 0)
-		LoopingIndicatorMusic->Stop();
+	//LoopingIndicatorMusic->Deactivate();
 }
 
 // Called when the game starts or when spawned
 void ASaucer::BeginPlay()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ASaucer begin play called"));
 	Super::BeginPlay();
 
 	//PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
@@ -99,29 +97,21 @@ void ASaucer::BeginPlay()
 	// Generate a movement direction specific to the actual class of this instance
 	MovementDirection = GenerateMovementDirection();
 
-	if (AudioCue->IsValidLowLevelFast()) {
-		UE_LOG(LogTemp, Warning, TEXT("Audio Cue is valid"));
-
-		LoopingIndicatorMusic->SetSound(AudioCue);
-		LoopingIndicatorMusic->Sound = AudioCue;
-	}
-
-	ActiveSaucersCount++;
-	// If this is the only saucer in the world
-	if (ActiveSaucersCount == 1)
+	if (AudioCue->IsValidLowLevelFast() && 
+		LoopingIndicatorMusic->IsValidLowLevel()) 
 	{
-		// Start playing the music
-		if (LoopingIndicatorMusic->IsValidLowLevel())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Audio should start playing!"));
+		LoopingIndicatorMusic->SetSound(AudioCue);
+		//LoopingIndicatorMusic->Sound = AudioCue;
+	}
+	else UE_LOG(LogTemp, Warning, TEXT("This is the problem"));
+	// Start playing the music
+	if (LoopingIndicatorMusic->IsValidLowLevel())
+	{
 			LoopingIndicatorMusic->Activate(true);
 			LoopingIndicatorMusic->Play(0.0f);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Something wrong with the audio!"));
-		}
 	}
+	else 
+		UE_LOG(LogTemp, Warning, TEXT("Ofc it wont work"));
 
 
 }
@@ -169,6 +159,8 @@ void ASaucer::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimiti
 	// Should be safe to use since it occurs at the end of the tick
 	// The timers should get deleted with the handles
 	UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
+	LoopingIndicatorMusic->Stop();
+	LoopingIndicatorMusic->Deactivate();
 	this->Destroy();
 
 }
