@@ -21,6 +21,9 @@ public:
 	//! Sets default values for this actor's properties
 	ASaucer();
 
+	//! Default destructor
+	~ASaucer();
+
 	//! Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -109,5 +112,16 @@ protected:
 	*	EnterTargetingState(), has no effect otherwise.
 	*/
 	virtual void ExitTargetingState();
+
+	/**
+	* Audio component used to play music when there is a saucer
+	*/
+	class UAudioComponent* LoopingIndicatorMusic;
+
+	// Sound to play
+	USoundCue* AudioCue;
+
+	//! Number of active saucers
+	static int ActiveSaucersCount;
 
 };

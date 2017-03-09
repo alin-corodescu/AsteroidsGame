@@ -5,7 +5,7 @@
 #include "WorldBoundaries.h"
 #include "Saucer.h"
 
-
+int ASaucer::ActiveSaucersCount = 0;
 // Sets default values
 ASaucer::ASaucer()
 {
@@ -54,7 +54,28 @@ ASaucer::ASaucer()
 	}
 	// Get the singleton instance of this class
 	movementManager = WorldBoundaries::GetInstance();
+	// Load our Sound Cue for the propeller sound we created in the editor... 
+	ConstructorHelpers::FObjectFinder<USoundCue> Cue(
+		TEXT("SoundCue'/Game/StarterContent/Audio/Starter_Background_Cue.Starter_Background_Cue'")
+	);
+	// Store a reference to the Cue asset - we'll need it later.
+	AudioCue = Cue.Object;
+	// Create an audio component
+	LoopingIndicatorMusic = CreateDefaultSubobject<UAudioComponent>(
+		TEXT("SaucerAudioComponent")
+		);
+	// I don't want the sound playing the moment it's created.
+	LoopingIndicatorMusic->bAutoActivate = false;
 
+	LoopingIndicatorMusic->SetupAttachment(RootComponent);
+}
+
+ASaucer::~ASaucer()
+{
+	ActiveSaucersCount--;
+	// If this was the last saucer, stop playing the music
+	if (ActiveSaucersCount == 0)
+		LoopingIndicatorMusic->Stop();
 }
 
 // Called when the game starts or when spawned
@@ -77,6 +98,32 @@ void ASaucer::BeginPlay()
 
 	// Generate a movement direction specific to the actual class of this instance
 	MovementDirection = GenerateMovementDirection();
+
+	if (AudioCue->IsValidLowLevelFast()) {
+		UE_LOG(LogTemp, Warning, TEXT("Audio Cue is valid"));
+
+		LoopingIndicatorMusic->SetSound(AudioCue);
+		LoopingIndicatorMusic->Sound = AudioCue;
+	}
+
+	ActiveSaucersCount++;
+	// If this is the only saucer in the world
+	if (ActiveSaucersCount == 1)
+	{
+		// Start playing the music
+		if (LoopingIndicatorMusic->IsValidLowLevel())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Audio should start playing!"));
+			LoopingIndicatorMusic->Activate(true);
+			LoopingIndicatorMusic->Play(0.0f);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Something wrong with the audio!"));
+		}
+	}
+
+
 }
 
 // Called every frame
