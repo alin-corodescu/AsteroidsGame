@@ -5,6 +5,9 @@
 #include "GameFramework/Actor.h"
 #include "AwardsScoreInterface.h"
 #include "Saucer.generated.h"
+
+//#define SOUND_CRASHING_BUG
+
 /**
 * Base class for Saucers. Includes common functionality and members.
 * Should not be spawned in the world.
@@ -113,6 +116,7 @@ protected:
 	*/
 	virtual void ExitTargetingState();
 
+#ifndef SOUND_CRASHING_BUG
 	/**
 	* Audio component used to play music when there is a saucer
 	*/
@@ -120,6 +124,6 @@ protected:
 
 	//! Sound to play
 	USoundCue* AudioCue;
-
+#endif
 
 };

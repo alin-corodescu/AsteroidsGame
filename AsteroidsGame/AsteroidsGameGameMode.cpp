@@ -11,7 +11,7 @@ AAsteroidsGameGameMode::AAsteroidsGameGameMode()
 {
 	DefaultPawnClass = ASpaceshipPawn::StaticClass();
 	
-	PlayerStateClass = AAsteroidsPlayerState::StaticClass();
+	//PlayerStateClass = AAsteroidsPlayerState::StaticClass();
 
 	HUDClass = ASimpleHUD::StaticClass();
 }

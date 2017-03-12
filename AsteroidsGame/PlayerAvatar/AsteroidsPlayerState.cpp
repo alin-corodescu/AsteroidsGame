@@ -31,14 +31,27 @@ void AAsteroidsPlayerState::SetNumberOfLives(int numberOfLives)
 void AAsteroidsPlayerState::modifyLives(int count)
 {
 	NumberOfLives += count;
-	if (NumberOfLives == 0)
+	if (NumberOfLives < 0)
 	{
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Game should end !"));
 		}
 		APlayerController* const player = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
+
+
+		if (GameOverAsset) // Check if the Asset is assigned in the blueprint.
+		{
+			// Create the widget and store it.
+			GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverAsset);
+
+			if (GameOverWidget)
+			{
+				// Add it to the view port
+				GameOverWidget->AddToViewport();
+			}
+
+		}
 		player->SetPause(true);
-		
 	}
 }

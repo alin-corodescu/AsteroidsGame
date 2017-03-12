@@ -222,6 +222,10 @@ void ASpaceshipPawn::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 
 		// Reset the ship's position;
 		this->SetActorLocation(FVector(0, 0, 0));
+
+		// Reset its speeds
+		this->CurrentForwardSpeed = 0;
+		this->CurrentRotationSpeed = 0;
 	}
 }
 void ASpaceshipPawn::MakeInvulnerable()

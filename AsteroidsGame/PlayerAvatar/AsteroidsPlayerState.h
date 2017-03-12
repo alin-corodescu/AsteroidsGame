@@ -14,12 +14,14 @@ class ASTEROIDSGAME_API AAsteroidsPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
-private:
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Score")
 	int CurrentScore; //!< Value of the current score
 
 	int NumberOfLives; //!< Number of lives left
 
 public:
+
 	int GetScore(); //!< Getter for score
 	void SetScore(int newScore); //!< Setter for score
 	/**
@@ -38,7 +40,12 @@ public:
 	*	@param [in] count the number of lives to be added
 	*/
 	void modifyLives(int count);
-	
-	
-	
+
+
+	//! Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<class UUserWidget> GameOverAsset;
+
+	//! Variable to hold the widget After Creating it.
+	UUserWidget* GameOverWidget;
 };

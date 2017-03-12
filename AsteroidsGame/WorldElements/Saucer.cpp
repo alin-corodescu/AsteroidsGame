@@ -53,6 +53,7 @@ ASaucer::ASaucer()
 	// Get the singleton instance of this class
 	movementManager = WorldBoundaries::GetInstance();
 
+#ifndef SOUND_CRASHING_BUG
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	ConstructorHelpers::FObjectFinder<USoundCue> Cue(
 		TEXT("SoundCue'/Game/Audio/police_Cue.police_Cue'")
@@ -67,6 +68,7 @@ ASaucer::ASaucer()
 	LoopingIndicatorMusic->bAutoActivate = false;
 
 	LoopingIndicatorMusic->SetupAttachment(RootComponent);
+#endif
 
 }
 
@@ -97,6 +99,7 @@ void ASaucer::BeginPlay()
 	// Generate a movement direction specific to the actual class of this instance
 	MovementDirection = GenerateMovementDirection();
 
+#ifndef SOUND_CRASHING_BUG
 	if (AudioCue->IsValidLowLevelFast() && 
 		LoopingIndicatorMusic->IsValidLowLevel()) 
 	{
@@ -107,12 +110,12 @@ void ASaucer::BeginPlay()
 	// Start playing the music
 	if (LoopingIndicatorMusic->IsValidLowLevel())
 	{
-			LoopingIndicatorMusic->Activate(true);
+			//LoopingIndicatorMusic->Activate(true);
 			LoopingIndicatorMusic->Play(0.0f);
 	}
 	else 
 		UE_LOG(LogTemp, Warning, TEXT("Ofc it wont work"));
-
+#endif
 
 }
 
@@ -159,10 +162,13 @@ void ASaucer::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimiti
 	// Should be safe to use since it occurs at the end of the tick
 	// The timers should get deleted with the handles
 	UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
-	LoopingIndicatorMusic->Stop();
-	LoopingIndicatorMusic->Deactivate();
-	this->Destroy();
 
+#ifndef SOUND_CRASHING_BUG
+	LoopingIndicatorMusic->Stop();
+	//LoopingIndicatorMusic->Deactivate();
+
+#endif
+	this->Destroy();
 }
 
 void ASaucer::Fire()
