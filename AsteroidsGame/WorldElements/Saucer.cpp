@@ -29,7 +29,7 @@ ASaucer::ASaucer()
 	// Get the ship mesh.
 	// Should use a different mesh for saucers
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		SaucerMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
+		SaucerMesh(TEXT(UFO_MESH));
 
 	// If the mesh was found set it and set properties.
 	if (SaucerMesh.Succeeded())
@@ -37,7 +37,7 @@ ASaucer::ASaucer()
 
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
-		FireAudio(TEXT("SoundWave'/Game/TwinStick/Audio/TwinStickFire.TwinStickFire'"));
+		FireAudio(TEXT(FIRE_SOUND));
 	if (FireAudio.Succeeded())
 	{
 		FireSound = FireAudio.Object;
@@ -45,7 +45,7 @@ ASaucer::ASaucer()
 
 
 	static ConstructorHelpers::FObjectFinder<USoundBase>
-		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+		DestructionAudio(TEXT(EXPLOSION_SOUND));
 	if (DestructionAudio.Succeeded())
 	{
 		DestructionSound = DestructionAudio.Object;
@@ -55,8 +55,8 @@ ASaucer::ASaucer()
 
 #ifndef SOUND_CRASHING_BUG
 	// Load our Sound Cue for the propeller sound we created in the editor... 
-	ConstructorHelpers::FObjectFinder<USoundCue> Cue(
-		TEXT("SoundCue'/Game/Audio/police_Cue.police_Cue'")
+	ConstructorHelpers::FObjectFinder<USoundWave> Cue(
+		TEXT(SAUCER_SOUND)
 	);
 	// Store a reference to the Cue asset - we'll need it later.
 	AudioCue = Cue.Object;
@@ -80,7 +80,6 @@ ASaucer::~ASaucer()
 // Called when the game starts or when spawned
 void ASaucer::BeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ASaucer begin play called"));
 	Super::BeginPlay();
 
 	//PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);

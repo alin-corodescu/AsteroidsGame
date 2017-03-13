@@ -11,6 +11,9 @@ AAsteroidsGameGameMode::AAsteroidsGameGameMode()
 {
 	DefaultPawnClass = ASpaceshipPawn::StaticClass();
 	
+	// Player state class was extended by a blueprint, and this setting
+	// is now done via the editor (needed a blueprint to get a reference
+	// to the game over menu
 	//PlayerStateClass = AAsteroidsPlayerState::StaticClass();
 
 	HUDClass = ASimpleHUD::StaticClass();

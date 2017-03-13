@@ -23,7 +23,7 @@ ASpaceshipPawn::ASpaceshipPawn()
 
 	// Get the ship mesh.
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		ShipMesh(TEXT("StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"));
+		ShipMesh(TEXT(UFO_MESH));
 	// If the mesh was found set it and set properties.
 	if (ShipMesh.Succeeded())
 	{
@@ -39,14 +39,14 @@ ASpaceshipPawn::ASpaceshipPawn()
 	GunOffset = 70.0f;
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase>
-		FireAudio(TEXT("SoundWave'/Game/TwinStick/Audio/TwinStickFire.TwinStickFire'"));
+		FireAudio(TEXT(FIRE_SOUND));
 	if (FireAudio.Succeeded())
 	{
 		FireSound = FireAudio.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<USoundBase>
-		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+		DestructionAudio(TEXT(EXPLOSION_SOUND));
 	if (DestructionAudio.Succeeded())
 	{
 		DestructionSound = DestructionAudio.Object;

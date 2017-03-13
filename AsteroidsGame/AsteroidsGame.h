@@ -8,8 +8,30 @@
 #include "Runtime/UMG/Public/Slate/SObjectWidget.h"
 #include "Runtime/UMG/Public/IUMGModule.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
-#define EDGE_X 1500.0f
-#define EDGE_Y 845.0f
-DECLARE_LOG_CATEGORY_EXTERN(Initialization, Log, All);
 
 
+
+
+/* 
+Courtesy of : 
+http://www.clker.com/clipart-small-red-heart-with-transparent-background.html 
+*/
+#define HEART_TEXTURE "Texture2D'/Game/Images/heart.heart'"
+
+// UE starter content
+#define EXPLOSION_SOUND "SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"
+
+// Content archive on wolf
+#define UFO_MESH "StaticMesh'/Game/ExampleContent/Input_Examples/Meshes/SM_UFO_Main.SM_UFO_Main'"
+#define FIRE_SOUND "SoundWave'/Game/TwinStick/Audio/TwinStickFire.TwinStickFire'"
+#define PROJECTILE_MESH "StaticMesh'/Game/TwinStick/Meshes/TwinStickProjectile.TwinStickProjectile'"
+#define ASTEROID_MESH "StaticMesh'/Game/ExampleContent/Landscapes/Meshes/SM_Rock.SM_Rock'"
+
+/*
+Courtesy of: 
+https://unrealtutorials.com/downloadable-content/sound-effects/
+(slightly modified - free to use for non-commercial products)
+*/
+#define SAUCER_SOUND "SoundWave'/Game/Audio/SaucerSound.SaucerSound'"
+
+#define ROBO_FONT "/Engine/EngineFonts/RobotoDistanceField"

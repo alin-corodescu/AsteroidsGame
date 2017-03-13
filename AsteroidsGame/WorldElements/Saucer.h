@@ -123,7 +123,7 @@ protected:
 	class UAudioComponent* LoopingIndicatorMusic;
 
 	//! Sound to play
-	USoundCue* AudioCue;
+	USoundWave* AudioCue;
 #endif
 
 };

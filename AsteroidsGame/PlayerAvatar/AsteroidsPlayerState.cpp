@@ -33,10 +33,6 @@ void AAsteroidsPlayerState::modifyLives(int count)
 	NumberOfLives += count;
 	if (NumberOfLives < 0)
 	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Game should end !"));
-		}
 		APlayerController* const player = Cast<APlayerController>(GEngine->GetFirstLocalPlayerController(GetWorld()));
 
 

@@ -17,7 +17,7 @@ AAsteroid::AAsteroid()
 
 	// Set the mesh for the static mesh component.
 	ConstructorHelpers::FObjectFinder<UStaticMesh>
-		AsteroidAsset(TEXT("StaticMesh'/Game/ExampleContent/Landscapes/Meshes/SM_Rock.SM_Rock'"));
+		AsteroidAsset(TEXT(ASTEROID_MESH));
 
 	// If the mesh was found set it and set properties.
 	if (AsteroidAsset.Succeeded())
@@ -33,7 +33,7 @@ AAsteroid::AAsteroid()
 
 	// Set up destruction sound
 	static ConstructorHelpers::FObjectFinder<USoundBase>
-		DestructionAudio(TEXT("SoundWave'/Game/StarterContent/Audio/Explosion01.Explosion01'"));
+		DestructionAudio(TEXT(EXPLOSION_SOUND));
 	if (DestructionAudio.Succeeded())
 	{
 		DestructionSound = DestructionAudio.Object;

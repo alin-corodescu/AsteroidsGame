@@ -35,12 +35,12 @@ void ASimpleHUD::DrawLives()
 
 ASimpleHUD::ASimpleHUD()
 {
-	static ConstructorHelpers::FObjectFinder<UFont> Font(TEXT("/Engine/EngineFonts/RobotoDistanceField"));
+	static ConstructorHelpers::FObjectFinder<UFont> Font(TEXT(ROBO_FONT));
 	HUDFont = Font.Object;
 
 	// Create the image
 	static ConstructorHelpers::FObjectFinder<UTexture2D>
-		HUDAssetsTextureOb(TEXT("Texture2D'/Game/Images/heart.heart'"));
+		HUDAssetsTextureOb(TEXT(HEART_TEXTURE));
 	LivesImageAsset = HUDAssetsTextureOb.Object;
 	float x = LivesImageAsset->GetSizeX();
 	float y = LivesImageAsset->GetSizeY();
